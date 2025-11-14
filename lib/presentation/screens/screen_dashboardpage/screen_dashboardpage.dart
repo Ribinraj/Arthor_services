@@ -5,8 +5,6 @@
 // import 'package:flutter/material.dart';
 // import 'package:arthor/core/responsiveutils.dart';
 
-
-
 // // Dashboard Statistics Card Widget
 // class DashboardCard extends StatelessWidget {
 //   final String number;
@@ -46,7 +44,7 @@
 //         children: [
 //           if (showLogo)
 //             Center(
-//               child: 
+//               child:
 //               // Use this for asset:
 //               Image.asset(
 //                 Appconstants.applogo,
@@ -150,13 +148,13 @@
 //                           ],
 //                         ),
 //                       ),
-            
+
 //                     ],
 //                   ),
 //                 ),
-     
+
 //               ResponsiveSizedBox.height40,
-              
+
 //               // First Row - New Orders and Logo
 //               Row(
 //                 children: [
@@ -178,9 +176,9 @@
 //                   ),
 //                 ],
 //               ),
-              
+
 //               ResponsiveSizedBox.height20,
-              
+
 //               // Second Row - Assigned and Completed
 //               Row(
 //                 children: [
@@ -205,10 +203,9 @@
 //                   ),
 //                 ],
 //               ),
-              
+
 //               ResponsiveSizedBox.height30,
-              
-      
+
 //             ],
 //           ),
 //         ),
@@ -302,10 +299,11 @@ import 'package:arthor/core/appconstants.dart';
 import 'package:arthor/core/colors.dart';
 import 'package:arthor/core/constants.dart';
 import 'package:arthor/core/responsiveutils.dart';
+import 'package:arthor/presentation/blocs/fetch_dashboard_bloc/fetch_dashboard_bloc.dart';
+import 'package:arthor/presentation/screens/screen_dashboardpage/widgets/loading_shimmer.dart';
 import 'package:arthor/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
-
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Custom Painter for Glow Effect
 class GlowPainter extends CustomPainter {
@@ -331,147 +329,6 @@ class GlowPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// // // Main Dashboard Page
-// // class ScreenDashboardpage extends StatefulWidget {
-// //   const ScreenDashboardpage({super.key});
-
-// //   @override
-// //   State<ScreenDashboardpage> createState() => _ScreenDashboardpageState();
-// // }
-
-// // class _ScreenDashboardpageState extends State<ScreenDashboardpage> {
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return Scaffold(
-// //       backgroundColor: Appcolors.kwhitecolor,
-// //       appBar: CustomAppBar(
-// //         title: 'Arttherservice',
-// //         onLogoutPressed: () {
-// //           print('Logout pressed');
-// //         },
-// //       ),
-// //       body: SafeArea(
-// //         child: Padding(
-// //           padding: EdgeInsets.all(ResponsiveUtils.wp(5)),
-// //           child: Column(
-// //             crossAxisAlignment: CrossAxisAlignment.start,
-// //             children: [
-// //               ResponsiveSizedBox.height20,
-// //               // Welcome Container
-// //               Container(
-// //                 padding: EdgeInsets.all(ResponsiveUtils.wp(5)),
-// //                 decoration: BoxDecoration(
-// //                   gradient: LinearGradient(
-// //                     colors: [
-// //                       Appcolors.kprimarycolor.withOpacity(0.08),
-// //                       Appcolors.ksecondarycolor.withOpacity(0.05),
-// //                     ],
-// //                     begin: Alignment.topLeft,
-// //                     end: Alignment.bottomRight,
-// //                   ),
-// //                   borderRadius: BorderRadiusStyles.kradius15(),
-// //                   border: Border.all(
-// //                     color: Appcolors.kprimarycolor.withOpacity(0.1),
-// //                     width: 1,
-// //                   ),
-// //                 ),
-// //                 child: Row(
-// //                   children: [
-// //                     Expanded(
-// //                       child: Column(
-// //                         crossAxisAlignment: CrossAxisAlignment.center,
-// //                         children: [
-// //                           ResponsiveText(
-// //                             'Welcome Back!',
-// //                             sizeFactor: 1.8,
-// //                             weight: FontWeight.bold,
-// //                             color: Appcolors.ksecondarycolor,
-// //                           ),
-// //                           ResponsiveSizedBox.height5,
-// //                           ResponsiveText(
-// //                             'Here\'s your service overview',
-// //                             sizeFactor: 0.95,
-// //                             weight: FontWeight.w500,
-// //                             color: Appcolors.kgreyColor,
-// //                           ),
-// //                         ],
-// //                       ),
-// //                     ),
-// //                   ],
-// //                 ),
-// //               ),
-// //               ResponsiveSizedBox.height40,
-              
-// //               // First Row - New Orders and Logo
-// //               Row(
-// //                 children: [
-// //                   Expanded(
-// //                     child: EnhancedDashboardCard(
-// //                       number: '24',
-// //                       label: 'New',
-// //                       gradientColors: [
-// //                         const Color(0xFF667eea),
-// //                         const Color(0xFF764ba2),
-// //                       ],
-// //                       icon: Icons.fiber_new_rounded,
-// //                       glowColor: const Color(0xFF667eea),
-// //                     ),
-// //                   ),
-// //                   ResponsiveSizedBox.width20,
-// //                   Expanded(
-// //                     child: Image.asset(
-// //                       Appconstants.applogo,
-// //                       height: ResponsiveUtils.hp(18),
-// //                     ),
-// //                   ),
-// //                 ],
-// //               ),
-              
-// //               ResponsiveSizedBox.height20,
-              
-// //               // Second Row - Assigned and Completed
-// //               Row(
-// //                 children: [
-// //                   Expanded(
-// //                     child: EnhancedDashboardCard(
-// //                       number: '18',
-// //                       label: 'Assigned',
-// //                       gradientColors: [
-// //                         const Color.fromARGB(255, 185, 71, 97),
-// //                         const Color.fromARGB(255, 134, 51, 62),
-// //                       ],
-// //                       icon: Icons.assignment_turned_in_rounded,
-// //                       glowColor: const Color(0xFFf5576c),
-// //                     ),
-// //                   ),
-// //                   ResponsiveSizedBox.width20,
-// //                   Expanded(
-// //                     child: EnhancedDashboardCard(
-// //                       number: '42',
-// //                       label: 'Completed',
-// //                       gradientColors: [
-// //                         const Color.fromARGB(255, 35, 88, 135),
-// //                         const Color.fromARGB(255, 39, 109, 113),
-// //                       ],
-// //                       icon: Icons.check_circle_rounded,
-// //                       glowColor: const Color(0xFF00f2fe),
-// //                     ),
-// //                   ),
-// //                 ],
-// //               ),
-              
-// //               ResponsiveSizedBox.height30,
-// //             ],
-// //           ),
-// //         ),
-// //       ),
-// //     );
-// //   }
-// // }
-
-
-
-
 // Main Dashboard Page
 class ScreenDashboardpage extends StatefulWidget {
   const ScreenDashboardpage({super.key});
@@ -481,6 +338,22 @@ class ScreenDashboardpage extends StatefulWidget {
 }
 
 class _ScreenDashboardpageState extends State<ScreenDashboardpage> {
+
+  Future<void> _onRefresh() async {
+    // Re-fetch dashboard data
+    context
+        .read<FetchDashboardBloc>()
+        .add(FetchDashboardInitialFetchingEvent());
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    context
+        .read<FetchDashboardBloc>()
+        .add(FetchDashboardInitialFetchingEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -488,99 +361,162 @@ class _ScreenDashboardpageState extends State<ScreenDashboardpage> {
       appBar: CustomAppBar(
         title: 'Arttherservice',
         onLogoutPressed: () {
-          // Handle logout
           print('Logout pressed');
         },
       ),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(ResponsiveUtils.wp(5)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ResponsiveSizedBox.height50,
-                       Row(
-                         children: [
-                           Expanded(
-                             child: Column(
-                               crossAxisAlignment: CrossAxisAlignment.center,
-                               children: [
-                                 ResponsiveText(
-                                   'Welcome Back!',
-                                   sizeFactor: 1.8,
-                                   weight: FontWeight.bold,
-                                   color: Appcolors.ksecondarycolor,
-                                 ),
-                                 ResponsiveSizedBox.height5,
-                                 ResponsiveText(
-                                   'Here\'s your service overview',
-                                   sizeFactor: 0.95,
-                                   weight: FontWeight.w500,
-                                   color: Appcolors.kgreyColor,
-                                 ),
-                               ],
-                             ),
-                           ),
-                                   
-                         ],
-                       ),
-     
-              ResponsiveSizedBox.height40,
-              
-   Image.asset(
-                        Appconstants.applogo,
-                        height: ResponsiveUtils.hp(20),
-                      ),
-              
-              ResponsiveSizedBox.height40,
-              
-              // Second Row - Assigned and Completed
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: RefreshIndicator(
+          color: Appcolors.kredcolor,
+          onRefresh: _onRefresh,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.all(ResponsiveUtils.wp(5)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                   EnhancedDashboardCard(
-                     number: '24',
-                     label: 'New',
-                     gradientColors: [
-                       const Color.fromARGB(255, 174, 134, 40),
-                       const Color.fromARGB(255, 235, 217, 134),
-                     ],
-                     icon: Icons.fiber_new_rounded,
-                     glowColor: const Color.fromARGB(255, 116, 112, 226),
-                   ),
-                               EnhancedDashboardCard(
-                      number: '18',
-                      label: 'Assigned',
-                      gradientColors: [
-                       const Color.fromARGB(255, 223, 44, 44),
-                       const Color.fromARGB(255, 195, 103, 103),
-                     ],
-                      icon: Icons.assignment_turned_in_rounded,
-                      glowColor: const Color(0xFFf5576c),
-                               ),
-                               EnhancedDashboardCard(
-                                            number: '42',
-                      label: 'Completed',
-                          gradientColors: [
-                       const Color.fromARGB(255, 23, 131, 136),
-                       const Color.fromARGB(255, 118, 194, 234),
-                     ],
-                      icon: Icons.check_circle_rounded,
-                      glowColor: const Color(0xFF00f2fe),
-                               ),
+                  ResponsiveSizedBox.height50,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ResponsiveText(
+                              'Welcome Back!',
+                              sizeFactor: 1.8,
+                              weight: FontWeight.bold,
+                              color: Appcolors.ksecondarycolor,
+                            ),
+                            ResponsiveSizedBox.height5,
+                            ResponsiveText(
+                              'Here\'s your service overview',
+                              sizeFactor: 0.95,
+                              weight: FontWeight.w500,
+                              color: Appcolors.kgreyColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  ResponsiveSizedBox.height40,
+
+                  Image.asset(
+                    Appconstants.applogo,
+                    height: ResponsiveUtils.hp(20),
+                  ),
+
+                  ResponsiveSizedBox.height40,
+
+                  // Dashboard cards area
+                  BlocBuilder<FetchDashboardBloc, FetchDashboardState>(
+                    builder: (context, state) {
+                      if (state is FetchDashboardLoadingState) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            EnhancedDashboardCardShimmer(),
+                            EnhancedDashboardCardShimmer(),
+                            EnhancedDashboardCardShimmer(),
+                          ],
+                        );
+                      } else if (state is FetchDashboardSuccessState) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            EnhancedDashboardCard(
+                              number: state
+                                      .dashboard.dashboard!.newCases ??
+                                  "",
+                              label: 'New',
+                              gradientColors: [
+                                const Color.fromARGB(255, 174, 134, 40),
+                                const Color.fromARGB(
+                                    255, 235, 217, 134),
+                              ],
+                              icon: Icons.fiber_new_rounded,
+                              glowColor: const Color.fromARGB(
+                                  255, 116, 112, 226),
+                            ),
+                            EnhancedDashboardCard(
+                              number: state.dashboard.dashboard!
+                                      .assignedCases ??
+                                  "",
+                              label: 'Assigned',
+                              gradientColors: [
+                                const Color.fromARGB(255, 223, 44, 44),
+                                const Color.fromARGB(
+                                    255, 195, 103, 103),
+                              ],
+                              icon: Icons
+                                  .assignment_turned_in_rounded,
+                              glowColor: const Color(0xFFf5576c),
+                            ),
+                            EnhancedDashboardCard(
+                              number: state.dashboard.dashboard!
+                                      .completedCases ??
+                                  "",
+                              label: 'Completed',
+                              gradientColors: [
+                                const Color.fromARGB(255, 23, 131, 136),
+                                const Color.fromARGB(
+                                    255, 118, 194, 234),
+                              ],
+                              icon: Icons.check_circle_rounded,
+                              glowColor: const Color(0xFF00f2fe),
+                            ),
+                          ],
+                        );
+                      } else if (state is FetchDashboardErrorState) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.error_outline,
+                              size: 40,
+                              color: Colors.red,
+                            ),
+                            ResponsiveSizedBox.height10,
+                            Text(
+                              state.message,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            ResponsiveSizedBox.height10,
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                context
+                                    .read<FetchDashboardBloc>()
+                                    .add(
+                                        FetchDashboardInitialFetchingEvent());
+                              },
+                              icon: const Icon(Icons.refresh),
+                              label: const Text("Try again"),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
+                  ),
+
+                  ResponsiveSizedBox.height30,
                 ],
               ),
-              
-              ResponsiveSizedBox.height30,
-              
-      
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+
 class EnhancedDashboardCard extends StatelessWidget {
   final String number;
   final String label;
@@ -609,10 +545,7 @@ class EnhancedDashboardCard extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadiusStyles.kradius15(),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.2),
-          width: 1.5,
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
         boxShadow: [
           BoxShadow(
             color: glowColor.withOpacity(0.3),
@@ -661,11 +594,7 @@ class EnhancedDashboardCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Icon with animated glow
-                Icon(
-                  icon,
-                  size: ResponsiveUtils.sp(8),
-                  color: Colors.white,
-                ),
+                Icon(icon, size: ResponsiveUtils.sp(8), color: Colors.white),
                 ResponsiveSizedBox.height10,
                 // Number with shadow
                 ResponsiveText(
@@ -682,7 +611,7 @@ class EnhancedDashboardCard extends StatelessWidget {
                   weight: FontWeight.w500,
                   color: Colors.white.withOpacity(0.9),
                 ),
-                ResponsiveSizedBox.height10
+                ResponsiveSizedBox.height10,
               ],
             ),
           ),

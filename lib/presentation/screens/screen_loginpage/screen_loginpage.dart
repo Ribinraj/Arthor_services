@@ -2,7 +2,9 @@ import 'package:arthor/core/appconstants.dart';
 import 'package:arthor/core/colors.dart';
 import 'package:arthor/core/constants.dart';
 import 'package:arthor/core/responsiveutils.dart';
+import 'package:arthor/presentation/blocs/send_otp_bloc.dart/send_otp_bloc.dart';
 import 'package:arthor/presentation/screens/screen_verifyotppage/screen_verifyotppage.dart';
+import 'package:arthor/widgets/cusstomsqure_loadingbutton.dart';
 import 'package:arthor/widgets/custom_navigation.dart';
 import 'package:arthor/widgets/custom_snackbar.dart';
 import 'package:arthor/widgets/custom_textfield.dart';
@@ -10,13 +12,12 @@ import 'package:arthor/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ScreenLoginpage extends StatefulWidget {
-
-  
-  const ScreenLoginpage({super.key, });
+  const ScreenLoginpage({super.key});
 
   @override
   State<ScreenLoginpage> createState() => _LoginScreenState();
@@ -47,11 +48,10 @@ class _LoginScreenState extends State<ScreenLoginpage> {
 
   void _handleSendOtp() {
     if (_formKey.currentState!.validate()) {
-      CustomNavigation.pushWithTransition(context,OtpVerificationPage(customerId:"23", mobileNumber:_mobileController.text));
-      // // Trigger the SendOtpBloc event
-      // context.read<SendOtpBloc>().add(
-      //   SendOtpButtonClickEvent(mobileNumber: _mobileController.text),
-      // );
+context.read<SendOtpBloc>().add(SendOtpButtonClickEvent(mobileNumber:_mobileController.text));
+    }
+    else{
+      CustomSnackbar.show(context, message: "Please fill Required fields", type:SnackbarType.error);
     }
   }
 
@@ -77,7 +77,7 @@ class _LoginScreenState extends State<ScreenLoginpage> {
               // mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                   ResponsiveSizedBox.height30,
+                ResponsiveSizedBox.height30,
                 Column(
                   children: [
                     // Logo Image
@@ -157,11 +157,29 @@ class _LoginScreenState extends State<ScreenLoginpage> {
                         controller: _mobileController,
                         validator: _validateMobile,
                         keyboardType: TextInputType.phone,
-                 
                       ),
-          
+
                       SizedBox(height: ResponsiveUtils.hp(4)),
-                      SizedBox(
+                      BlocConsumer<SendOtpBloc, SendOtpState>(
+                        listener: (context, state) {
+                       if (state is SendOtpSuccessState) {
+                         CustomNavigation.pushReplaceWithTransition(context, OtpVerificationPage(executiveId:state.executiveId, mobileNumber:_mobileController.text));
+                       }
+                       else if(state is SendOtpErrorState){
+                        CustomSnackbar.show(context, message:state.message, type:SnackbarType.error);
+                       }
+                        },
+                        builder: (context, state) {
+                          if (state is SendOtpLoadingState) {
+                                 return CustomSqureLoadingButton(
+                                loading: SpinKitCircle(
+                                  size: 20,
+                                  color: Appcolors.kwhitecolor,
+                                ),
+                                color: Appcolors.kredcolor,
+                              );
+                          }
+                          return SizedBox(
                             width: double.infinity,
                             height: ResponsiveUtils.hp(6.5),
                             child: ElevatedButton(
@@ -170,8 +188,9 @@ class _LoginScreenState extends State<ScreenLoginpage> {
                                 backgroundColor: Appcolors.kblackcolor,
                                 foregroundColor: Appcolors.kwhitecolor,
                                 elevation: 5,
-                                shadowColor: Appcolors.kprimarycolor
-                                    .withAlpha(77),
+                                shadowColor: Appcolors.kprimarycolor.withAlpha(
+                                  77,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(
                                     ResponsiveUtils.borderRadius(3),
@@ -183,56 +202,10 @@ class _LoginScreenState extends State<ScreenLoginpage> {
                                 color: Appcolors.kwhitecolor,
                               ),
                             ),
-                          )
-                      // Send OTP Button with BlocConsumer
-                      // BlocConsumer<SendOtpBloc, SendOtpState>(
-                      //   listener: (context, state) {
-                      //     if (state is SendOtpSuccessState) {
-               
-                  
-                      //     } else if (state is SendOtpErrorState) {
-                      //       CustomSnackbar.show(
-                      //         context,
-                      //         message: state.message,
-                      //         type: SnackbarType.error,
-                      //       );
-                      //     }
-                      //   },
-                      //   builder: (context, state) {
-                      //     if (state is SendOtpLoadingState) {
-                      //       return CustomSqureLoadingButton(
-                      //         loading: SpinKitCircle(
-                      //           size: 20,
-                      //           color: Appcolors.kwhitecolor,
-                      //         ),
-                      //         color: Appcolors.kredcolor,
-                      //       );
-                      //     }
-                      //     return SizedBox(
-                      //       width: double.infinity,
-                      //       height: ResponsiveUtils.hp(6.5),
-                      //       child: ElevatedButton(
-                      //         onPressed: _handleSendOtp,
-                      //         style: ElevatedButton.styleFrom(
-                      //           backgroundColor: Appcolors.kprimarycolor,
-                      //           foregroundColor: Appcolors.kwhitecolor,
-                      //           elevation: 5,
-                      //           shadowColor: Appcolors.kprimarycolor
-                      //               .withAlpha(77),
-                      //           shape: RoundedRectangleBorder(
-                      //             borderRadius: BorderRadius.circular(
-                      //               ResponsiveUtils.borderRadius(3),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //         child: TextStyles.body(
-                      //           text: 'SEND OTP',
-                      //           color: Appcolors.kwhitecolor,
-                      //         ),
-                      //       ),
-                      //     );
-                      //   },
-                      // ),
+                          );
+                        },
+                      ),
+       
                     ],
                   ),
                 ),

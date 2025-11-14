@@ -1,6 +1,13 @@
 import 'package:arthor/core/colors.dart';
 import 'package:arthor/core/responsiveutils.dart';
+import 'package:arthor/domain/repositories/apprepo.dart';
+import 'package:arthor/domain/repositories/loginrepo.dart';
 import 'package:arthor/presentation/blocs/bottom_navigation_bloc/bottom_navigation_bloc.dart';
+import 'package:arthor/presentation/blocs/fetch_dashboard_bloc/fetch_dashboard_bloc.dart';
+import 'package:arthor/presentation/blocs/fetch_newcases_bloc/fetch_newcases_bloc.dart';
+import 'package:arthor/presentation/blocs/resend_otp_bloc/resend_otp_bloc.dart';
+import 'package:arthor/presentation/blocs/send_otp_bloc.dart/send_otp_bloc.dart';
+import 'package:arthor/presentation/blocs/verify_otp_bloc/verify_otp_bloc.dart';
 import 'package:arthor/presentation/screens/screen_splashpage/screen_splashpage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,8 +24,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ResponsiveUtils().init(context);
-    return BlocProvider(
-      create: (context) => BottomNavigationBloc(),
+    final loginrepo=Loginrepo();
+    final apprepo=Apprepo();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => BottomNavigationBloc()),
+        BlocProvider(create: (context) => SendOtpBloc(repository: loginrepo)),
+         BlocProvider(create: (context) => VerifyOtpBloc(repository: loginrepo)),
+          BlocProvider(create: (context) => ResendOtpBloc(repository: loginrepo)),
+           BlocProvider(create: (context) => FetchDashboardBloc(repository: apprepo)),
+            BlocProvider(create: (context) => FetchNewcasesBloc(repository: apprepo)),
+        
+      ],
       child: MaterialApp(
         title: 'Arthor Services',
         debugShowCheckedModeBanner: false,

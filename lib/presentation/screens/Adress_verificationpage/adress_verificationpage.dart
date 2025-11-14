@@ -3776,24 +3776,10 @@ class _CameraWithWatermarkState extends State<CameraWithWatermark> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildWatermarkRow(
-                                Icons.calendar_today,
-                                'Date & Time',
-                                _currentLocationData['timestamp'] ?? '',
-                              ),
-                            ),
-                            // Refresh button
-                            IconButton(
-                              onPressed: _refreshing ? null : _refreshLocation,
-                              icon: _refreshing
-                                  ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                                  : const Icon(Icons.refresh, color: Colors.white),
-                              tooltip: 'Refresh location',
-                            ),
-                          ],
+                        _buildWatermarkRow(
+                          Icons.calendar_today,
+                          'Date & Time',
+                          _currentLocationData['timestamp'] ?? '',
                         ),
                         const Divider(color: Colors.white24, height: 16),
                         _buildWatermarkRow(
@@ -3808,10 +3794,23 @@ class _CameraWithWatermarkState extends State<CameraWithWatermark> {
                           _currentLocationData['longitude'] != null ? _currentLocationData['longitude'].toStringAsFixed(6) : '',
                         ),
                         const Divider(color: Colors.white24, height: 16),
-                        _buildWatermarkRow(
-                          Icons.home,
-                          'Address',
-                          _currentLocationData['address'] ?? '',
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildWatermarkRow(
+                                Icons.home,
+                                'Address',
+                                _currentLocationData['address'] ?? '',
+                              ),
+                            ),
+                                     IconButton(
+                              onPressed: _refreshing ? null : _refreshLocation,
+                              icon: _refreshing
+                                  ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.red))
+                                  : const Icon(Icons.refresh, color: Colors.red),
+                              tooltip: 'Refresh location',
+                            ),
+                          ],
                         ),
                       ],
                     ),

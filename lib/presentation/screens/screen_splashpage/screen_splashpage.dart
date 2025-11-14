@@ -2,9 +2,11 @@ import 'package:arthor/core/appconstants.dart';
 import 'package:arthor/core/colors.dart';
 import 'package:arthor/core/constants.dart';
 import 'package:arthor/presentation/screens/screen_loginpage/screen_loginpage.dart';
+import 'package:arthor/presentation/screens/screen_mainpage/screen_mainpage.dart'; // <-- add this
 import 'package:arthor/widgets/custom_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // <-- add this
 
 class ScreenSplashpage extends StatefulWidget {
   const ScreenSplashpage({super.key});
@@ -23,7 +25,7 @@ class _ScreenSplashpageState extends State<ScreenSplashpage>
   @override
   void initState() {
     super.initState();
-    
+
     _controller = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
@@ -55,12 +57,36 @@ class _ScreenSplashpageState extends State<ScreenSplashpage>
 
     _controller.forward();
 
-    // Navigate to next screen after 3 seconds
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-CustomNavigation.pushReplaceWithTransition(context, ScreenLoginpage());
-      }
-    });
+    // start the token check + navigation flow
+    _handleSplashNavigation();
+  }
+
+  Future<String> getUserToken() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getString('USER_TOKEN') ?? '';
+  }
+
+  Future<void> _handleSplashNavigation() async {
+    // optional: keep the 3-second splash delay
+    await Future.delayed(const Duration(seconds: 3));
+
+    final token = await getUserToken();
+
+    if (!mounted) return;
+
+    if (token.isNotEmpty) {
+      // User is logged in → go to main page
+      CustomNavigation.pushReplaceWithTransition(
+        context,
+        const ScreenMainPage(),
+      );
+    } else {
+      // No token → go to send-OTP / login page
+      CustomNavigation.pushReplaceWithTransition(
+        context,
+        const ScreenLoginpage(),
+      );
+    }
   }
 
   @override
@@ -106,8 +132,6 @@ CustomNavigation.pushReplaceWithTransition(context, ScreenLoginpage());
                         ),
                       ],
                     ),
-               
-                   
                     child: Image.asset(
                       Appconstants.applogo,
                       width: 120,
@@ -116,9 +140,9 @@ CustomNavigation.pushReplaceWithTransition(context, ScreenLoginpage());
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 40),
-              
+
               // App name with slide and fade animation
               SlideTransition(
                 position: _slideAnimation,
@@ -148,16 +172,19 @@ CustomNavigation.pushReplaceWithTransition(context, ScreenLoginpage());
                   ),
                 ),
               ),
-              
+
               ResponsiveSizedBox.height20,
-              
+
               // Loading indicator
               FadeTransition(
                 opacity: _fadeAnimation,
                 child: SizedBox(
                   width: 40,
                   height: 40,
-                  child:SpinKitCircle(color: Appcolors.kprimarycolor,size: 20,),
+                  child: SpinKitCircle(
+                    color: Appcolors.kprimarycolor,
+                    size: 20,
+                  ),
                 ),
               ),
             ],
