@@ -250,7 +250,7 @@ class _ScreenAssignedpageState extends State<ScreenAssignedpage> {
     TextStyles.caption(
       text: "Time Out",
       weight: FontWeight.bold,
-      color: Colors.red, // optional — highlight expired text
+      color: Colors.red, 
     ),
 ],
 

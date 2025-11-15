@@ -5,7 +5,6 @@
 // import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
 
-
 // // Sample data model
 // class CaseModel {
 //   final String id;
@@ -211,9 +210,9 @@
 //                             ),
 //                         ],
 //                       ),
-                      
+
 //                       ResponsiveSizedBox.height15,
-                      
+
 //                       // ID Badge
 //                       Container(
 //                         padding: EdgeInsets.symmetric(
@@ -230,18 +229,18 @@
 //                           color: Appcolors.kprimarycolor,
 //                         ),
 //                       ),
-                      
+
 //                       ResponsiveSizedBox.height10,
-                      
+
 //                       // Name
 //                       TextStyles.subheadline(
 //                         text: caseItem.name,
 //                         weight: FontWeight.bold,
 //                         color: Appcolors.kblackcolor,
 //                       ),
-                      
+
 //                       ResponsiveSizedBox.height5,
-                      
+
 //                       // Product Type & Pin Code Row
 //                       Row(
 //                         children: [
@@ -280,26 +279,26 @@
 //                           ),
 //                         ],
 //                       ),
-                      
+
 //                       // Expanded Details
 //                       if (isExpanded) ...[
 //                         ResponsiveSizedBox.height20,
-                        
+
 //                         Divider(
 //                           color: Colors.grey[300],
 //                           thickness: 1,
 //                         ),
-                        
+
 //                         ResponsiveSizedBox.height15,
-                        
+
 //                         TextStyles.subheadline(
 //                           text: "Case Details",
 //                           weight: FontWeight.bold,
 //                           color: Appcolors.kprimarycolor,
 //                         ),
-                        
+
 //                         ResponsiveSizedBox.height15,
-                        
+
 //                         // Detail Items
 //                                _buildDetailRow(
 //                           icon: Icons.person_outline,
@@ -313,7 +312,7 @@
 //                           value: caseItem.customerType,
 //                         ),
 //                         ResponsiveSizedBox.height10,
-                        
+
 //                         _buildDetailRow(
 //                           icon: Icons.phone_outlined,
 //                           label: "Mobile Number",
@@ -338,11 +337,9 @@
 //                           value: caseItem.city,
 //                         ),
 //                         ResponsiveSizedBox.height10,
-                        
-          
-                        
+
 //                         ResponsiveSizedBox.height20,
-                        
+
 //                         // Action Buttons
 //                         Row(
 //                           children: [
@@ -442,14 +439,14 @@
 import 'package:arthor/core/colors.dart';
 import 'package:arthor/core/constants.dart';
 import 'package:arthor/core/responsiveutils.dart';
+import 'package:arthor/presentation/blocs/case_accept_decline_bloc/case_accept_decline_bloc.dart';
 import 'package:arthor/presentation/blocs/fetch_newcases_bloc/fetch_newcases_bloc.dart';
 import 'package:arthor/presentation/screens/screen_newcasespage/widgets/loading_shimmerwidget.dart';
 import 'package:arthor/widgets/custom_appbar.dart';
+import 'package:arthor/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-
-
 
 class ScreenNewcasespage extends StatefulWidget {
   const ScreenNewcasespage({super.key});
@@ -468,50 +465,24 @@ class _ScreenNewcasespageState extends State<ScreenNewcasespage> {
     context.read<FetchNewcasesBloc>().add(FetchNecasesInitialEvent());
   }
 
-String formatDate(String dateString) {
-  if (dateString.isEmpty) return 'N/A';
-  try {
-    final date = DateTime.parse(dateString);
-    return DateFormat('dd MMM yyyy').format(date);
-  } catch (e) {
-    return 'Invalid Date';
-  }
-}
-
-String formatTime(String dateString) {
-  if (dateString.isEmpty) return 'N/A';
-  try {
-    final date = DateTime.parse(dateString);
-    return DateFormat('hh:mm a').format(date);
-  } catch (e) {
-    return 'Invalid Time';
-  }
-}
-
-  void handleAccept(String caseId) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Case $caseId accepted'),
-        backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-    setState(() {
-      expandedCaseId = null;
-    });
+  String formatDate(String dateString) {
+    if (dateString.isEmpty) return 'N/A';
+    try {
+      final date = DateTime.parse(dateString);
+      return DateFormat('dd MMM yyyy').format(date);
+    } catch (e) {
+      return 'Invalid Date';
+    }
   }
 
-  void handleReject(String caseId) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Case $caseId rejected'),
-        backgroundColor: Colors.red,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-    setState(() {
-      expandedCaseId = null;
-    });
+  String formatTime(String dateString) {
+    if (dateString.isEmpty) return 'N/A';
+    try {
+      final date = DateTime.parse(dateString);
+      return DateFormat('hh:mm a').format(date);
+    } catch (e) {
+      return 'Invalid Time';
+    }
   }
 
   @override
@@ -523,7 +494,7 @@ String formatTime(String dateString) {
         builder: (context, state) {
           // Loading State
           if (state is FetchNewCasesLoadingState) {
-           return const CaseCardsShimmerLoading(count: 3);
+            return const CaseCardsShimmerLoading(count: 3);
           }
 
           // Error State
@@ -539,17 +510,20 @@ String formatTime(String dateString) {
                   ),
                   ResponsiveSizedBox.height20,
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: ResponsiveUtils.wp(8)),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: ResponsiveUtils.wp(8),
+                    ),
                     child: TextStyles.body(
                       text: state.message,
                       color: Colors.red,
-                   
                     ),
                   ),
                   ResponsiveSizedBox.height20,
                   ElevatedButton.icon(
                     onPressed: () {
-                      context.read<FetchNewcasesBloc>().add(FetchNecasesInitialEvent());
+                      context.read<FetchNewcasesBloc>().add(
+                        FetchNecasesInitialEvent(),
+                      );
                     },
                     icon: const Icon(Icons.refresh),
                     label: TextStyles.body(
@@ -601,7 +575,9 @@ String formatTime(String dateString) {
 
             return RefreshIndicator(
               onRefresh: () async {
-                context.read<FetchNewcasesBloc>().add(FetchNecasesInitialEvent());
+                context.read<FetchNewcasesBloc>().add(
+                  FetchNecasesInitialEvent(),
+                );
               },
               color: Appcolors.kprimarycolor,
               child: ListView.builder(
@@ -625,7 +601,9 @@ String formatTime(String dateString) {
                       child: InkWell(
                         onTap: () {
                           setState(() {
-                            expandedCaseId = isExpanded ? null : caseItem.caseId;
+                            expandedCaseId = isExpanded
+                                ? null
+                                : caseItem.caseId;
                           });
                         },
                         borderRadius: BorderRadiusStyles.kradius15(),
@@ -646,7 +624,8 @@ String formatTime(String dateString) {
                             children: [
                               // Header Row - Date, Time & Action Buttons
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   // Date & Time
                                   Row(
@@ -658,15 +637,20 @@ String formatTime(String dateString) {
                                       ),
                                       SizedBox(width: ResponsiveUtils.wp(2)),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           TextStyles.caption(
-                                            text: formatDate(caseItem.createdAt.date),
+                                            text: formatDate(
+                                              caseItem.createdAt.date,
+                                            ),
                                             weight: FontWeight.w600,
                                             color: Appcolors.kblackcolor,
                                           ),
                                           TextStyles.caption(
-                                            text: formatTime(caseItem.createdAt.date),
+                                            text: formatTime(
+                                              caseItem.createdAt.date,
+                                            ),
                                             color: Colors.grey[600],
                                           ),
                                         ],
@@ -675,118 +659,272 @@ String formatTime(String dateString) {
                                   ),
                                   // Quick Action Buttons (only when not expanded)
                                   if (!isExpanded)
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          onPressed: () => handleAccept(caseItem.caseId),
-                                          icon: const Icon(Icons.check_circle_outline),
-                                          color: Colors.green,
-                                          iconSize: ResponsiveUtils.sp(7),
-                                          padding: EdgeInsets.zero,
-                                          constraints: const BoxConstraints(),
-                                        ),
-                                        SizedBox(width: ResponsiveUtils.wp(2)),
-                                        IconButton(
-                                          onPressed: () => handleReject(caseItem.caseId),
-                                          icon: const Icon(Icons.cancel_outlined),
-                                          color: Colors.red,
-                                          iconSize: ResponsiveUtils.sp(7),
-                                          padding: EdgeInsets.zero,
-                                          constraints: const BoxConstraints(),
-                                        ),
-                                      ],
+                                    BlocConsumer<
+                                      CaseAcceptDeclineBloc,
+                                      CaseAcceptDeclineState
+                                    >(
+                                      listener: (context, state) {
+                                        if (state
+                                            is CaseAcceptdeclineSucessState) {
+                                          CustomSnackbar.show(
+                                            context,
+                                            message: state.message,
+                                            type: SnackbarType.success,
+                                          );
+                                          context.read<FetchNewcasesBloc>().add(
+                                            FetchNecasesInitialEvent(),
+                                          );
+                                        } else if (state
+                                            is CaseAcceptancedeclineErrorState) {
+                                          CustomSnackbar.show(
+                                            context,
+                                            message: state.message,
+                                            type: SnackbarType.success,
+                                          );
+                                        }
+                                      },
+                                      builder: (context, state) {
+                                        bool isAcceptLoading = false;
+                                        bool isRejectLoading = false;
+
+                                        if (state
+                                            is CaseAcceptdeclineLoadingState) {
+                                          if (state.isAccepting) {
+                                            isAcceptLoading = true;
+                                          } else {
+                                            isRejectLoading = true;
+                                          }
+                                        }
+
+                                        return Row(
+                                          children: [
+                                            // ✅ ACCEPT BUTTON
+                                            IconButton(
+                                              onPressed:
+                                                  (isAcceptLoading ||
+                                                      isRejectLoading)
+                                                  ? null
+                                                  : () {
+                                                      context
+                                                          .read<
+                                                            CaseAcceptDeclineBloc
+                                                          >()
+                                                          .add(
+                                                            CaseAcceptButtonClickEvent(
+                                                              caseId: caseItem
+                                                                  .caseId,
+                                                            ),
+                                                          );
+                                                      setState(() {
+                                                        expandedCaseId = null;
+                                                      });
+                                                    },
+                                              icon: isAcceptLoading
+                                                  ? const SizedBox(
+                                                      width: 22,
+                                                      height: 22,
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                            strokeWidth: 2,
+                                                          ),
+                                                    )
+                                                  : const Icon(
+                                                      Icons
+                                                          .check_circle_outline,
+                                                    ),
+                                              color: Colors.green,
+                                              iconSize: ResponsiveUtils.sp(7),
+                                              padding: EdgeInsets.zero,
+                                              constraints:
+                                                  const BoxConstraints(),
+                                            ),
+
+                                            SizedBox(
+                                              width: ResponsiveUtils.wp(2),
+                                            ),
+
+                                            // ❌ DECLINE BUTTON
+                                            IconButton(
+                                              onPressed:
+                                                  (isAcceptLoading ||
+                                                      isRejectLoading)
+                                                  ? null
+                                                  : () {
+                                                      context
+                                                          .read<
+                                                            CaseAcceptDeclineBloc
+                                                          >()
+                                                          .add(
+                                                            CaseDeclineButtonClickEvent(
+                                                              caseId: caseItem
+                                                                  .caseId,
+                                                            ),
+                                                          );
+                                                      setState(() {
+                                                        expandedCaseId = null;
+                                                      });
+                                                    },
+                                              icon: isRejectLoading
+                                                  ? const SizedBox(
+                                                      width: 22,
+                                                      height: 22,
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                            strokeWidth: 2,
+                                                          ),
+                                                    )
+                                                  : const Icon(
+                                                      Icons.cancel_outlined,
+                                                    ),
+                                              color: Colors.red,
+                                              iconSize: ResponsiveUtils.sp(7),
+                                              padding: EdgeInsets.zero,
+                                              constraints:
+                                                  const BoxConstraints(),
+                                            ),
+                                          ],
+                                        );
+                                      },
                                     ),
+
+                                  // Row(
+                                  //   children: [
+                                  //     IconButton(
+                                  //       onPressed: () => handleAccept(caseItem.caseId),
+                                  //       icon: const Icon(Icons.check_circle_outline),
+                                  //       color: Colors.green,
+                                  //       iconSize: ResponsiveUtils.sp(7),
+                                  //       padding: EdgeInsets.zero,
+                                  //       constraints: const BoxConstraints(),
+                                  //     ),
+                                  //     SizedBox(width: ResponsiveUtils.wp(2)),
+                                  //     IconButton(
+                                  //       onPressed: () => handleReject(caseItem.caseId),
+                                  //       icon: const Icon(Icons.cancel_outlined),
+                                  //       color: Colors.red,
+                                  //       iconSize: ResponsiveUtils.sp(7),
+                                  //       padding: EdgeInsets.zero,
+                                  //       constraints: const BoxConstraints(),
+                                  //     ),
+                                  //   ],
+                                  // ),
                                 ],
                               ),
-                              
-                              ResponsiveSizedBox.height15,
-                              
-                              // ID Badge
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: ResponsiveUtils.wp(3),
-                                  vertical: ResponsiveUtils.hp(0.6),
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Appcolors.kprimarycolor.withOpacity(0.1),
-                                  borderRadius: BorderRadiusStyles.kradius5(),
-                                ),
-                                child: TextStyles.caption(
-                                  text: caseItem.caseId,
-                                  weight: FontWeight.bold,
-                                  color: Appcolors.kprimarycolor,
-                                ),
-                              ),
-                              
+
                               ResponsiveSizedBox.height10,
-                              
+
                               // Name
-                              TextStyles.subheadline(
-                                text: caseItem.customerName,
-                                weight: FontWeight.bold,
-                                color: Appcolors.kblackcolor,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: TextStyles.subheadline(
+                                      text: caseItem.customerName,
+                                      weight: FontWeight.bold,
+                                      color: Appcolors.kblackcolor,
+                                    ),
+                                  ),
+                                  // ID Badge
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: ResponsiveUtils.wp(3),
+                                      vertical: ResponsiveUtils.hp(0.6),
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Appcolors.kprimarycolor
+                                          .withOpacity(0.1),
+                                      borderRadius:
+                                          BorderRadiusStyles.kradius5(),
+                                    ),
+                                    child: TextStyles.caption(
+                                      text: caseItem.caseId,
+                                      weight: FontWeight.bold,
+                                      color: Appcolors.kprimarycolor,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              
+
                               ResponsiveSizedBox.height5,
-                              
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.account_balance_wallet_outlined,
+                                    size: ResponsiveUtils.sp(3.5),
+                                    color: Appcolors.ksecondarycolor,
+                                  ),
+                                  SizedBox(width: ResponsiveUtils.wp(2)),
+                                  Expanded(
+                                    child: TextStyles.body(
+                                      text: caseItem.productName,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              ResponsiveSizedBox.height5,
                               // Product Type & Pin Code Row
                               Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Row(
                                       children: [
                                         Icon(
-                                          Icons.account_balance_wallet_outlined,
+                                          Icons.location_on_outlined,
                                           size: ResponsiveUtils.sp(3.5),
                                           color: Appcolors.ksecondarycolor,
                                         ),
-                                        SizedBox(width: ResponsiveUtils.wp(2)),
-                                        Expanded(
-                                          child: TextStyles.body(
-                                            text: caseItem.productName,
-                                            color: Colors.grey[700],
-                                          ),
+                                        SizedBox(width: ResponsiveUtils.wp(1)),
+                                        TextStyles.body(
+                                          text: caseItem.presentAddressPincode,
+                                          weight: FontWeight.w600,
+                                          color: Colors.grey[700],
                                         ),
                                       ],
                                     ),
                                   ),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.location_on_outlined,
-                                        size: ResponsiveUtils.sp(3.5),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 5,
+                                      horizontal: 7,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Appcolors.kbackgroundcolor,
+                                      borderRadius:
+                                          BorderRadiusStyles.kradius5(),
+                                      border: Border.all(
                                         color: Appcolors.ksecondarycolor,
+                                        width: .5,
                                       ),
-                                      SizedBox(width: ResponsiveUtils.wp(1)),
-                                      TextStyles.body(
-                                        text: caseItem.presentAddressPincode,
-                                        weight: FontWeight.w600,
-                                        color: Colors.grey[700],
-                                      ),
-                                    ],
+                                    ),
+                                    child: TextStyles.caption(
+                                      text: "Present Residence",
+                                      weight: FontWeight.bold,
+                                      color: Appcolors.ksecondarycolor,
+                                    ),
                                   ),
                                 ],
                               ),
-                              
+
                               // Expanded Details
                               if (isExpanded) ...[
                                 ResponsiveSizedBox.height20,
-                                
-                                Divider(
-                                  color: Colors.grey[300],
-                                  thickness: 1,
-                                ),
-                                
+
+                                Divider(color: Colors.grey[300], thickness: 1),
+
                                 ResponsiveSizedBox.height15,
-                                
+
                                 TextStyles.subheadline(
                                   text: "Case Details",
                                   weight: FontWeight.bold,
                                   color: Appcolors.kprimarycolor,
                                 ),
-                                
+
                                 ResponsiveSizedBox.height15,
-                                
+
                                 // Detail Items
                                 _buildDetailRow(
                                   icon: Icons.person_outline,
@@ -800,7 +938,7 @@ String formatTime(String dateString) {
                                   value: caseItem.customerType,
                                 ),
                                 ResponsiveSizedBox.height10,
-                                
+
                                 _buildDetailRow(
                                   icon: Icons.phone_outlined,
                                   label: "Mobile Number",
@@ -825,59 +963,194 @@ String formatTime(String dateString) {
                                   value: caseItem.city,
                                 ),
                                 ResponsiveSizedBox.height10,
-                                
+
                                 ResponsiveSizedBox.height20,
-                                
+
                                 // Action Buttons
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: ElevatedButton.icon(
-                                        onPressed: () => handleAccept(caseItem.caseId),
-                                        icon: const Icon(Icons.check_circle),
-                                        label: TextStyles.body(
-                                          text: "Accept",
-                                          weight: FontWeight.w600,
-                                          color: Appcolors.kwhitecolor,
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.green,
-                                          foregroundColor: Appcolors.kwhitecolor,
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: ResponsiveUtils.hp(1.5),
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadiusStyles.kradius10(),
-                                          ),
-                                          elevation: 0,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: ResponsiveUtils.wp(3)),
-                                    Expanded(
-                                      child: ElevatedButton.icon(
-                                        onPressed: () => handleReject(caseItem.caseId),
-                                        icon: const Icon(Icons.cancel),
-                                        label: TextStyles.body(
-                                          text: "Reject",
-                                          weight: FontWeight.w600,
-                                          color: Appcolors.kwhitecolor,
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.red,
-                                          foregroundColor: Appcolors.kwhitecolor,
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: ResponsiveUtils.hp(1.5),
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadiusStyles.kradius10(),
-                                          ),
-                                          elevation: 0,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                BlocConsumer<CaseAcceptDeclineBloc, CaseAcceptDeclineState>(
+  listener: (context, state) {
+    if (state is CaseAcceptdeclineSucessState) {
+      CustomSnackbar.show(
+        context,
+        message: state.message,
+        type: SnackbarType.success,
+      );
+      context.read<FetchNewcasesBloc>().add(
+            FetchNecasesInitialEvent(),
+          );
+    } else if (state is CaseAcceptancedeclineErrorState) {
+      CustomSnackbar.show(
+        context,
+        message: state.message,
+        type: SnackbarType.success, // ← keep as you wrote
+      );
+    }
+  },
+  builder: (context, state) {
+    bool isAcceptLoading = false;
+    bool isRejectLoading = false;
+
+    if (state is CaseAcceptdeclineLoadingState) {
+      if (state.isAccepting) {
+        isAcceptLoading = true;
+      } else {
+        isRejectLoading = true;
+      }
+    }
+
+    return Row(
+      children: [
+        // ✅ ACCEPT BUTTON (same UI, uses bloc)
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: (isAcceptLoading || isRejectLoading)
+                ? null
+                : () {
+                    context
+                        .read<CaseAcceptDeclineBloc>()
+                        .add(
+                          CaseAcceptButtonClickEvent(
+                            caseId: caseItem.caseId,
+                          ),
+                        );
+                    setState(() {
+                      expandedCaseId = null;
+                    });
+                  },
+            icon: isAcceptLoading
+                ? const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ),
+                  )
+                : const Icon(Icons.check_circle),
+            label: TextStyles.body(
+              text: "Accept",
+              weight: FontWeight.w600,
+              color: Appcolors.kwhitecolor,
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              foregroundColor: Appcolors.kwhitecolor,
+              padding: EdgeInsets.symmetric(
+                vertical: ResponsiveUtils.hp(1.5),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusStyles.kradius10(),
+              ),
+              elevation: 0,
+            ),
+          ),
+        ),
+
+        SizedBox(width: ResponsiveUtils.wp(3)),
+
+        // ❌ REJECT BUTTON (same UI, uses bloc)
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: (isAcceptLoading || isRejectLoading)
+                ? null
+                : () {
+                    context
+                        .read<CaseAcceptDeclineBloc>()
+                        .add(
+                          CaseDeclineButtonClickEvent(
+                            caseId: caseItem.caseId,
+                          ),
+                        );
+                    setState(() {
+                      expandedCaseId = null;
+                    });
+                  },
+            icon: isRejectLoading
+                ? const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ),
+                  )
+                : const Icon(Icons.cancel),
+            label: TextStyles.body(
+              text: "Reject",
+              weight: FontWeight.w600,
+              color: Appcolors.kwhitecolor,
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Appcolors.kwhitecolor,
+              padding: EdgeInsets.symmetric(
+                vertical: ResponsiveUtils.hp(1.5),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusStyles.kradius10(),
+              ),
+              elevation: 0,
+            ),
+          ),
+        ),
+      ],
+    );
+  },
+)
+
+                                // Row(
+                                //   children: [
+                                //     Expanded(
+                                //       child: ElevatedButton.icon(
+                                //         onPressed: () =>
+                                //             handleAccept(caseItem.caseId),
+                                //         icon: const Icon(Icons.check_circle),
+                                //         label: TextStyles.body(
+                                //           text: "Accept",
+                                //           weight: FontWeight.w600,
+                                //           color: Appcolors.kwhitecolor,
+                                //         ),
+                                //         style: ElevatedButton.styleFrom(
+                                //           backgroundColor: Colors.green,
+                                //           foregroundColor:
+                                //               Appcolors.kwhitecolor,
+                                //           padding: EdgeInsets.symmetric(
+                                //             vertical: ResponsiveUtils.hp(1.5),
+                                //           ),
+                                //           shape: RoundedRectangleBorder(
+                                //             borderRadius:
+                                //                 BorderRadiusStyles.kradius10(),
+                                //           ),
+                                //           elevation: 0,
+                                //         ),
+                                //       ),
+                                //     ),
+                                //     SizedBox(width: ResponsiveUtils.wp(3)),
+                                //     Expanded(
+                                //       child: ElevatedButton.icon(
+                                //         onPressed: () =>
+                                //             handleReject(caseItem.caseId),
+                                //         icon: const Icon(Icons.cancel),
+                                //         label: TextStyles.body(
+                                //           text: "Reject",
+                                //           weight: FontWeight.w600,
+                                //           color: Appcolors.kwhitecolor,
+                                //         ),
+                                //         style: ElevatedButton.styleFrom(
+                                //           backgroundColor: Colors.red,
+                                //           foregroundColor:
+                                //               Appcolors.kwhitecolor,
+                                //           padding: EdgeInsets.symmetric(
+                                //             vertical: ResponsiveUtils.hp(1.5),
+                                //           ),
+                                //           shape: RoundedRectangleBorder(
+                                //             borderRadius:
+                                //                 BorderRadiusStyles.kradius10(),
+                                //           ),
+                                //           elevation: 0,
+                                //         ),
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
                               ],
                             ],
                           ),
@@ -892,9 +1165,7 @@ String formatTime(String dateString) {
 
           // Initial/Default State
           return Center(
-            child: CircularProgressIndicator(
-              color: Appcolors.kprimarycolor,
-            ),
+            child: CircularProgressIndicator(color: Appcolors.kprimarycolor),
           );
         },
       ),
@@ -918,10 +1189,7 @@ String formatTime(String dateString) {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextStyles.caption(
-                text: label,
-                color: Colors.grey[600],
-              ),
+              TextStyles.caption(text: label, color: Colors.grey[600]),
               TextStyles.medium(
                 text: value,
                 weight: FontWeight.w600,

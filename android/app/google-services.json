@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "79363433676",
+    "project_id": "arthor-services-6892c",
+    "storage_bucket": "arthor-services-6892c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:79363433676:android:6cd5515939f2e709cb8e69",
+        "android_client_info": {
+          "package_name": "com.crisant.arthor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh4_SLDDQsMR3xhprL3Gr06QGM2TzXWWE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

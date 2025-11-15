@@ -5,6 +5,9 @@ class Endpoints {
   static const resendotp = 'login/resend';
   static const dashboard='login/profile';
   static const newcases='cases';
+  static const acceptcase='cases/accept';
+  static const declinecase='cases/decline';
+  static const asignedcases='cases/assigned';
   
 
 }

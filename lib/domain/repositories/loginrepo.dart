@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:arthor/core/urls.dart';
+import 'package:arthor/domain/token_interceptor.dart';
 import 'package:dio/dio.dart';
 
 
@@ -29,7 +30,7 @@ class Loginrepo {
       : dio = dio ??
             Dio(BaseOptions(
                 baseUrl: Endpoints.baseUrl,
-                headers: {'Content-Type': 'application/json'}));
+                headers: {'Content-Type': 'application/json'}))..interceptors.add(TokenInterceptor());
 
   ///----------------------send otp-----------------------------////
 
