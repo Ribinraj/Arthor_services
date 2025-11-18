@@ -5,12 +5,14 @@ import 'package:arthor/core/responsiveutils.dart';
 import 'package:arthor/domain/pushnotification_controller.dart';
 import 'package:arthor/domain/repositories/apprepo.dart';
 import 'package:arthor/domain/repositories/loginrepo.dart';
+import 'package:arthor/presentation/blocs/bloc/form_submit_bloc.dart';
 import 'package:arthor/presentation/blocs/bottom_navigation_bloc/bottom_navigation_bloc.dart';
 import 'package:arthor/presentation/blocs/case_accept_decline_bloc/case_accept_decline_bloc.dart';
 import 'package:arthor/presentation/blocs/fetch_assignedcases_bloc/fetch_assignedcases_bloc.dart';
 import 'package:arthor/presentation/blocs/fetch_atributes_bloc/fetch_atributes_bloc.dart';
 import 'package:arthor/presentation/blocs/fetch_dashboard_bloc/fetch_dashboard_bloc.dart';
 import 'package:arthor/presentation/blocs/fetch_newcases_bloc/fetch_newcases_bloc.dart';
+
 import 'package:arthor/presentation/blocs/resend_otp_bloc/resend_otp_bloc.dart';
 import 'package:arthor/presentation/blocs/send_otp_bloc.dart/send_otp_bloc.dart';
 import 'package:arthor/presentation/blocs/untreceable_reasons_bloc/untreceable_reasons_bloc.dart';
@@ -78,6 +80,7 @@ class MyApp extends StatelessWidget {
               BlocProvider(create: (context) => FetchAssignedcasesBloc(repository: apprepo)),
               BlocProvider(create: (context) => UntreceableReasonsBloc(repository: apprepo)),
               BlocProvider(create: (context) => FetchAtributesBloc(repository: apprepo)),
+                BlocProvider(create: (context) => FormSubmitBloc(repository: apprepo)),
         
       ],
       child: MaterialApp(

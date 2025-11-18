@@ -487,6 +487,7 @@ class _ScreenAssignedpageState extends State<ScreenAssignedpage> {
                                         AddressVerificationPage(
                                           sectionKey: "Present Residence",
                                           verificationTypeId: "1",
+                                          caseId: caseItem.caseId,
 
                                         ),
                                       );

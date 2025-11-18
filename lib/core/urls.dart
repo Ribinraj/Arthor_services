@@ -11,4 +11,5 @@ class Endpoints {
   static const setToken = 'login/settoken';
   static const untreceablereason = 'masters/untracebale';
   static const atributes = 'masters/caseattributes';
+  static const submitdata='cases/updatecase';
 }
