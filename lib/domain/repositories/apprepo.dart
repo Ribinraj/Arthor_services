@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:arthor/core/urls.dart';
+import 'package:arthor/data/atributes_model.dart';
 import 'package:arthor/data/cases_model.dart';
 import 'package:arthor/data/dashboard_model.dart';
+import 'package:arthor/data/untreceablereason_model.dart';
 import 'package:arthor/domain/token_interceptor.dart';
 
 import 'package:arthor/widgets/shared_prferences.dart';
@@ -142,7 +144,7 @@ class Apprepo {
     
     try {
       final token=await getUserToken();
-      Response response = await dio.post(Endpoints.newcases, options: Options(headers: {'Authorization': token}));
+      Response response = await dio.post(Endpoints.asignedcases, options: Options(headers: {'Authorization': token}));
       final responseData = response.data;
 
 
@@ -235,6 +237,88 @@ log("Response data statusssssss: $responseData");
 
         return ApiResponse(
           data:null,
+          message: responseData['message'] ?? 'Success',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData["status"],
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint(e.message);
+
+      log(e.toString());
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+      ///////-------------fetchuntreceablereasons-----------/////////////
+  Future<ApiResponse<List<UntreceableReasonModels>>>untreceableresons() async {
+    // log('pushtoken when login ${user.pushToken}');
+    
+    try {
+      final token=await getUserToken();
+      Response response = await dio.post(Endpoints.untreceablereason, options: Options(headers: {'Authorization': token}));
+      final responseData = response.data;
+
+
+      if (responseData["status"] == 200) {
+        final List<dynamic> untreceablereasons = responseData['data'];
+        List<UntreceableReasonModels> fetchednreasons= untreceablereasons
+            .map((cases) => UntreceableReasonModels.fromJson(cases))
+            .toList();
+        return ApiResponse(
+          data: fetchednreasons,
+          message: responseData['message'] ?? 'Success',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData["status"],
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint(e.message);
+
+      log(e.toString());
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+        ///////-------------fetchAtributes-----------/////////////
+  Future<ApiResponse<List<AtributesModel>>>fetchatributes({required String verificationTypeId}) async {
+    // log('pushtoken when login ${user.pushToken}');
+    
+    try {
+      final token=await getUserToken();
+      Response response = await dio.post(Endpoints.atributes, options: Options(headers: {'Authorization': token}));
+      final responseData = response.data;
+
+
+      if (responseData["status"] == 200) {
+        final List<dynamic> atributes = responseData['data'];
+        List<AtributesModel> fetchedatributes= atributes
+            .map((cases) => AtributesModel.fromJson(cases))
+            .toList();
+        return ApiResponse(
+          data: fetchedatributes,
           message: responseData['message'] ?? 'Success',
           error: false,
           status: responseData["status"],

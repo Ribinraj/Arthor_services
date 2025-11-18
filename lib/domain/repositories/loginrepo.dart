@@ -139,7 +139,27 @@ class Loginrepo {
       );
     }
   }
-
+///////////-------------update token-----------////////////////////////////
+Future<void> updatetoken({required String token}) async {
+  try {
+  //  final userToken = await getUserToken();
+    
+    Response response = await dio.post(
+      Endpoints.setToken, 
+      //options: Options(headers: {'Authorization': userToken}),
+      data: {  "pushToken": token}
+    );
+    
+    final responseData = response.data;
+    if (!responseData["error"] && responseData["status"] == 200) {
+      log("FCM token updated successfully");
+    } else {
+      log("Failed to update FCM token: ${responseData["message"]}");
+    }
+  } catch (e) {
+    log("Error updating FCM token: $e");
+  }
+}
 // // //////////-------------------fetchprofile---------------//////////////////
 //   Future<ApiResponse<ProfileModel>> fetchprofile() async {
 //     try {

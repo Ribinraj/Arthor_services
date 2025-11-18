@@ -4,9 +4,10 @@ import 'package:arthor/core/appconstants.dart';
 import 'package:arthor/core/colors.dart';
 import 'package:arthor/core/constants.dart';
 import 'package:arthor/core/responsiveutils.dart';
+import 'package:arthor/domain/pushnotification_controller.dart';
 import 'package:arthor/presentation/blocs/resend_otp_bloc/resend_otp_bloc.dart';
 import 'package:arthor/presentation/blocs/verify_otp_bloc/verify_otp_bloc.dart';
-import 'package:arthor/presentation/screens/screen_dashboardpage/screen_dashboardpage.dart';
+
 import 'package:arthor/presentation/screens/screen_mainpage/screen_mainpage.dart';
 
 import 'package:arthor/widgets/cusstomsqure_loadingbutton.dart';
@@ -220,7 +221,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                                   ScreenMainPage(),
                                 );
                
-                              // PushNotifications().sendTokenToServer();
+                               PushNotifications().sendTokenToServer();
                             } else if (state is VerifyOtpErrorState) {
                               CustomSnackbar.show(context, message: state.message, type: SnackbarType.error);
                             }

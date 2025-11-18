@@ -30,7 +30,7 @@ android {
    defaultConfig {
     applicationId = "com.crisant.arthor"
     // 🔹 Force minSdk 23 to satisfy firebase_messaging
-    minSdk = 23
+    minSdk = flutter.minSdkVersion
     targetSdk = flutter.targetSdkVersion
     versionCode = flutter.versionCode
     versionName = flutter.versionName
