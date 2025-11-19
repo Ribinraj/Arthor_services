@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:arthor/core/urls.dart';
 import 'package:arthor/domain/token_interceptor.dart';
+import 'package:arthor/widgets/shared_prferences.dart';
 import 'package:dio/dio.dart';
 
 
@@ -139,27 +140,45 @@ class Loginrepo {
       );
     }
   }
-///////////-------------update token-----------////////////////////////////
+/////////////-------------update token-----------////////////////////////////
 Future<void> updatetoken({required String token}) async {
   try {
-  //  final userToken = await getUserToken();
-    
+    final userToken = await getUserToken();
+
+    log("--------------------------------------------------");
+    log("🔐 USER TOKEN CHECK");
+    log("User Token: ${userToken != null && userToken.isNotEmpty ? userToken : "❌ NO TOKEN FOUND"}");
+    log("--------------------------------------------------");
+
+    log("📤 Sending FCM Token Update Request...");
+    log("Request URL: ${Endpoints.setToken}");
+    log("Request Body: {pushToken: $token}");
+    log("Request Headers: Authorization: $userToken");
+
     Response response = await dio.post(
-      Endpoints.setToken, 
-      //options: Options(headers: {'Authorization': userToken}),
-      data: {  "pushToken": token}
+      Endpoints.setToken,
+      options: Options(headers: {'Authorization': userToken}),
+      data: {"pushToken": token},
     );
-    
+
     final responseData = response.data;
+
+    log("--------------------------------------------------");
+    log("📥 RESPONSE RECEIVED");
+    log("Status Code: ${response.statusCode}");
+    log("Response Data: $responseData");
+    log("--------------------------------------------------");
+
     if (!responseData["error"] && responseData["status"] == 200) {
-      log("FCM token updated successfully");
+      log("✅ FCM token updated successfully");
     } else {
-      log("Failed to update FCM token: ${responseData["message"]}");
+      log("❌ Failed to update FCM token: ${responseData["message"]}");
     }
   } catch (e) {
-    log("Error updating FCM token: $e");
+    log("🔥 ERROR updating FCM token: $e");
   }
 }
+
 // // //////////-------------------fetchprofile---------------//////////////////
 //   Future<ApiResponse<ProfileModel>> fetchprofile() async {
 //     try {

@@ -23,7 +23,7 @@ class CustomSqureLoadingButton extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(width: .5, color: Appcolors.kprimarycolor),
+        border: Border.all(width: .5, color: Appcolors.kblackcolor),
       ),
       child: Center(
         child:loading,

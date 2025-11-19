@@ -176,7 +176,7 @@ context.read<SendOtpBloc>().add(SendOtpButtonClickEvent(mobileNumber:_mobileCont
                                   size: 20,
                                   color: Appcolors.kwhitecolor,
                                 ),
-                                color: Appcolors.kredcolor,
+                                color: Appcolors.kblackcolor,
                               );
                           }
                           return SizedBox(

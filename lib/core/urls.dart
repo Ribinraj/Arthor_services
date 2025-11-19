@@ -6,7 +6,7 @@ class Endpoints {
   static const dashboard = 'login/profile';
   static const newcases = 'cases';
   static const acceptcase = 'cases/accept';
-  static const declinecase = 'cases/decline';
+  static const declinecase = 'cases/reject';
   static const asignedcases = 'cases/assigned';
   static const setToken = 'login/settoken';
   static const untreceablereason = 'masters/untracebale';

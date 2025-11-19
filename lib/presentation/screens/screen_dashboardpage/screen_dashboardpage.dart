@@ -8,6 +8,7 @@ import 'package:arthor/core/responsiveutils.dart';
 import 'package:arthor/presentation/blocs/fetch_dashboard_bloc/fetch_dashboard_bloc.dart';
 import 'package:arthor/presentation/screens/screen_dashboardpage/widgets/loading_shimmer.dart';
 import 'package:arthor/widgets/custom_appbar.dart';
+import 'package:arthor/widgets/custom_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -130,33 +131,43 @@ class _ScreenDashboardpageState extends State<ScreenDashboardpage> {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            EnhancedDashboardCard(
-                              number: state
-                                      .dashboard.dashboard!.newCases ??
-                                  "",
-                              label: 'New',
-                              gradientColors: [
-                                const Color.fromARGB(255, 174, 134, 40),
-                                const Color.fromARGB(
-                                    255, 235, 217, 134),
-                              ],
-                              icon: Icons.fiber_new_rounded,
-                              glowColor: const Color.fromARGB(
-                                  255, 116, 112, 226),
+                            InkWell(
+                              onTap: (){
+                                navigateToMainPage(context, 1);
+                              },
+                              child: EnhancedDashboardCard(
+                                number: state
+                                        .dashboard.dashboard!.newCases ??
+                                    "",
+                                label: 'New',
+                                gradientColors: [
+                                  const Color.fromARGB(255, 174, 134, 40),
+                                  const Color.fromARGB(
+                                      255, 235, 217, 134),
+                                ],
+                                icon: Icons.fiber_new_rounded,
+                                glowColor: const Color.fromARGB(
+                                    255, 116, 112, 226),
+                              ),
                             ),
-                            EnhancedDashboardCard(
-                              number: state.dashboard.dashboard!
-                                      .assignedCases ??
-                                  "",
-                              label: 'Assigned',
-                              gradientColors: [
-                                const Color.fromARGB(255, 223, 44, 44),
-                                const Color.fromARGB(
-                                    255, 195, 103, 103),
-                              ],
-                              icon: Icons
-                                  .assignment_turned_in_rounded,
-                              glowColor: const Color(0xFFf5576c),
+                            InkWell(
+                              onTap: () {
+                                navigateToMainPage(context, 2);
+                              },
+                              child: EnhancedDashboardCard(
+                                number: state.dashboard.dashboard!
+                                        .assignedCases ??
+                                    "",
+                                label: 'Assigned',
+                                gradientColors: [
+                                  const Color.fromARGB(255, 223, 44, 44),
+                                  const Color.fromARGB(
+                                      255, 195, 103, 103),
+                                ],
+                                icon: Icons
+                                    .assignment_turned_in_rounded,
+                                glowColor: const Color(0xFFf5576c),
+                              ),
                             ),
                             EnhancedDashboardCard(
                               number: state.dashboard.dashboard!

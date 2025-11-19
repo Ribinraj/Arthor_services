@@ -233,7 +233,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                                   size: 20,
                                   color: Appcolors.kwhitecolor,
                                 ),
-                                color: Appcolors.kredcolor,
+                                color: Appcolors.kblackcolor,
                               );
                             }
                             return ElevatedButton(
@@ -254,7 +254,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                                     }
                                   : null,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Appcolors.kredcolor,
+                                backgroundColor: Appcolors.kblackcolor,
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),

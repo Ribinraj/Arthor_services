@@ -45,7 +45,13 @@ android {
         }
     }
 }
-
+// 🔹 NEW: Force all configs to use a safe androidx.core version
+configurations.all {
+    resolutionStrategy {
+        force("androidx.core:core-ktx:1.12.0")
+        force("androidx.core:core:1.12.0")
+    }
+}
 flutter {
     source = "../.."
 }
@@ -54,5 +60,8 @@ flutter {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     // or even a later version if Gradle suggests one
+        // 🔹 NEW: downgrade androidx.core so it works with AGP 8.7.3
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core:1.12.0")
 }
 

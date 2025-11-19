@@ -434,19 +434,39 @@ class PushNotifications {
   }
 
   /// Call after user logs in to send the stored token to server
-  Future<void> sendTokenToServer() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('FCM_TOKEN');
-    log('sendservertoken: $token');
+Future<void> sendTokenToServer() async {
+  final prefs = await SharedPreferences.getInstance();
+  String? token = prefs.getString('FCM_TOKEN');
+
+  // 1️⃣ Log what we got from prefs
+  log('sendservertoken (from prefs): $token');
+
+  // 2️⃣ If FCM_TOKEN is null, fetch it from Firebase now
+  if (token == null) {
+    token = await FirebaseMessaging.instance.getToken();
+    log('sendservertoken (fetched from Firebase): $token');
+
     if (token != null) {
-      final loginRepo = Loginrepo();
-      try {
-        await loginRepo.updatetoken(token: token);
-      } catch (e) {
-        debugPrint('Failed to send token to server: $e');
-      }
+      await prefs.setString('FCM_TOKEN', token);
+      log('FCM_TOKEN saved to SharedPreferences');
     }
   }
+
+  // 3️⃣ If still null, we can’t proceed
+  if (token == null) {
+    log('sendservertoken: still null, skipping server update');
+    return;
+  }
+
+  // 4️⃣ Now call API to update token
+  try {
+    final loginRepo = Loginrepo();
+    await loginRepo.updatetoken(token: token);
+  } catch (e) {
+    debugPrint('Failed to send token to server: $e');
+  }
+}
+
 
   /// Delete device token (logout flow). Cancels local notifications and deletes Android channel.
   Future<void> deleteDeviceToken() async {

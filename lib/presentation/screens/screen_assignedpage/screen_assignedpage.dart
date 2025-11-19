@@ -1,7 +1,9 @@
 import 'dart:async';
+
 import 'package:arthor/core/colors.dart';
 import 'package:arthor/core/constants.dart';
 import 'package:arthor/core/responsiveutils.dart';
+import 'package:arthor/data/cases_model.dart';
 import 'package:arthor/presentation/blocs/fetch_assignedcases_bloc/fetch_assignedcases_bloc.dart';
 import 'package:arthor/presentation/screens/Adress_verificationpage/adress_verificationpage.dart';
 import 'package:arthor/presentation/screens/screen_newcasespage/widgets/loading_shimmerwidget.dart';
@@ -9,34 +11,7 @@ import 'package:arthor/widgets/custom_appbar.dart';
 import 'package:arthor/widgets/custom_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-// Assigned case model
-class AssignedCaseModel {
-  final String id;
-  final String name;
-  final String productType;
-  final String pinCode;
-  final Duration initialTimeRemaining; // Initial time when case was assigned
-  final DateTime assignedAt; // When the case was assigned
-  final String customerType;
-  final String mobileNumber;
-  final String city;
-
-  AssignedCaseModel({
-    required this.id,
-    required this.name,
-    required this.productType,
-    required this.pinCode,
-    required this.initialTimeRemaining,
-    DateTime? assignedAt,
-    required this.customerType,
-    required this.mobileNumber,
-    required this.city,
-  }) : assignedAt = assignedAt ?? DateTime.now();
-
-  // Calculate deadline from assigned time
-  DateTime get deadline => assignedAt.add(initialTimeRemaining);
-}
+import 'package:url_launcher/url_launcher.dart';
 
 class ScreenAssignedpage extends StatefulWidget {
   const ScreenAssignedpage({super.key});
@@ -48,50 +23,6 @@ class ScreenAssignedpage extends StatefulWidget {
 class _ScreenAssignedpageState extends State<ScreenAssignedpage> {
   String? expandedCaseId;
   Timer? _timer;
-
-  // // Sample data with time remaining
-  // final List<AssignedCaseModel> assignedCases = [
-  //   AssignedCaseModel(
-  //     id: 'AC001',
-  //     name: 'Rajesh Kumar',
-  //     productType: 'Home Loan',
-  //     pinCode: '560001',
-  //     initialTimeRemaining: const Duration(hours: 5, minutes: 30, seconds: 45),
-  //     customerType: 'Individual',
-  //     mobileNumber: '+91 98765 43210',
-  //     city: 'Bangalore',
-  //   ),
-  //   AssignedCaseModel(
-  //     id: 'AC002',
-  //     name: 'Priya Sharma',
-  //     productType: 'Personal Loan',
-  //     pinCode: '560034',
-  //     initialTimeRemaining: const Duration(hours: 2, minutes: 15, seconds: 30),
-  //     customerType: 'Salaried',
-  //     mobileNumber: '+91 87654 32109',
-  //     city: 'Bangalore',
-  //   ),
-  //   AssignedCaseModel(
-  //     id: 'AC003',
-  //     name: 'Amit Patel',
-  //     productType: 'Business Loan',
-  //     pinCode: '560078',
-  //     initialTimeRemaining: const Duration(hours: 12, minutes: 45, seconds: 20),
-  //     customerType: 'Self Employed',
-  //     mobileNumber: '+91 76543 21098',
-  //     city: 'Bangalore',
-  //   ),
-  //   AssignedCaseModel(
-  //     id: 'AC004',
-  //     name: 'Sneha Reddy',
-  //     productType: 'Car Loan',
-  //     pinCode: '560095',
-  //     initialTimeRemaining: const Duration(minutes: 01, seconds: 10),
-  //     customerType: 'Salaried',
-  //     mobileNumber: '+91 65432 10987',
-  //     city: 'Bangalore',
-  //   ),
-  // ];
 
   @override
   void initState() {
@@ -113,35 +44,7 @@ class _ScreenAssignedpageState extends State<ScreenAssignedpage> {
     super.dispose();
   }
 
-  String getTimeRemaining(DateTime deadline) {
-    final now = DateTime.now();
-    final difference = deadline.difference(now);
 
-    if (difference.isNegative) {
-      return "EXPIRED";
-    }
-
-    final hours = difference.inHours;
-    final minutes = difference.inMinutes % 60;
-    final seconds = difference.inSeconds % 60;
-
-    return "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
-  }
-
-  Color getTimerColor(DateTime deadline) {
-    final now = DateTime.now();
-    final difference = deadline.difference(now);
-
-    if (difference.isNegative) {
-      return Colors.red;
-    } else if (difference.inHours < 1) {
-      return Colors.red;
-    } else if (difference.inHours < 3) {
-      return Colors.orange;
-    } else {
-      return Colors.green;
-    }
-  }
 
   void handleStartVerification(String caseId) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -229,7 +132,7 @@ class _ScreenAssignedpageState extends State<ScreenAssignedpage> {
                     ),
                     ResponsiveSizedBox.height20,
                     TextStyles.subheadline(
-                      text: "No new cases available",
+                      text: "No Assigned cases available",
                       color: Colors.grey,
                     ),
                   ],
@@ -252,10 +155,12 @@ class _ScreenAssignedpageState extends State<ScreenAssignedpage> {
                 itemBuilder: (context, index) {
                   final caseItem = cases[index];
                   final isExpanded = expandedCaseId == caseItem.caseId;
-                  //final timeRemaining = getTimeRemaining(caseItem.deadline);
-                  //final timerColor = getTimerColor(caseItem.deadline);
-                  //final isExpired = timeRemaining == "EXPIRED";
-
+  final createdAtDateTime = _parseCreatedAt(caseItem.updatedAt);
+  final timeRemaining = getTimeRemaining(createdAtDateTime);
+  final timerColor = getTimerColor(createdAtDateTime);
+  final isExpired = timeRemaining == "EXPIRED";
+                  final topPincode = _getAvailablePincode(caseItem);
+                  final addressInfo = _getAvailableAddress(caseItem);
                   return AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
@@ -311,44 +216,45 @@ class _ScreenAssignedpageState extends State<ScreenAssignedpage> {
                                       color: Appcolors.kprimarycolor,
                                     ),
                                   ),
-                                  // Container(
-                                  //   padding: EdgeInsets.symmetric(
-                                  //     horizontal: ResponsiveUtils.wp(3),
-                                  //     vertical: ResponsiveUtils.hp(.7),
-                                  //   ),
-                                  //   decoration: BoxDecoration(
-                                  //     color: timerColor.withOpacity(0.1),
-                                  //     borderRadius: BorderRadiusStyles.kradius10(),
-                                  //     border: Border.all(
-                                  //       color: timerColor,
-                                  //       width: .5,
-                                  //     ),
-                                  //   ),
-                                  //   child: Row(
-                                  //     children: [
-                                  //       Icon(
-                                  //         isExpired
-                                  //             ? Icons.warning_rounded
-                                  //             : Icons.timer_outlined,
-                                  //         size: ResponsiveUtils.sp(4.5),
-                                  //         color: timerColor,
-                                  //       ),
-                                  //       SizedBox(width: ResponsiveUtils.wp(2)),
-                                  //       if (!isExpired)
-                                  //         TextStyles.caption(
-                                  //           text: timeRemaining,
-                                  //           weight: FontWeight.bold,
-                                  //           color: timerColor,
-                                  //         )
-                                  //       else
-                                  //         TextStyles.caption(
-                                  //           text: "Time Out",
-                                  //           weight: FontWeight.bold,
-                                  //           color: Colors.red,
-                                  //         ),
-                                  //     ],
-                                  //   ),
-                                  // ),
+                                            Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: ResponsiveUtils.wp(3),
+                      vertical: ResponsiveUtils.hp(.7),
+                    ),
+                    decoration: BoxDecoration(
+                      color: timerColor.withOpacity(0.1),
+                      borderRadius: BorderRadiusStyles.kradius10(),
+                      border: Border.all(
+                        color: timerColor,
+                        width: .5,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          isExpired
+                              ? Icons.warning_rounded
+                              : Icons.timer_outlined,
+                          size: ResponsiveUtils.sp(4.5),
+                          color: timerColor,
+                        ),
+                        SizedBox(width: ResponsiveUtils.wp(2)),
+                        if (!isExpired)
+                          TextStyles.caption(
+                            text: timeRemaining,
+                            weight: FontWeight.bold,
+                            color: timerColor,
+                          )
+                        else
+                          TextStyles.caption(
+                            text: "Time Out",
+                            weight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                      ],
+                    ),
+                  ),
+            
                                 ],
                               ),
 
@@ -383,20 +289,22 @@ class _ScreenAssignedpageState extends State<ScreenAssignedpage> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.location_on_outlined,
-                                        size: ResponsiveUtils.sp(3.5),
-                                        color: Appcolors.ksecondarycolor,
-                                      ),
-                                      SizedBox(width: ResponsiveUtils.wp(1)),
-                                      TextStyles.body(
-                                        text: caseItem.presentAddressPincode,
-                                        weight: FontWeight.w600,
-                                        color: Colors.grey[700],
-                                      ),
-                                    ],
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.location_on_outlined,
+                                          size: ResponsiveUtils.sp(3.5),
+                                          color: Appcolors.ksecondarycolor,
+                                        ),
+                                        SizedBox(width: ResponsiveUtils.wp(1)),
+                                        TextStyles.body(
+                                          text: topPincode,
+                                          weight: FontWeight.w600,
+                                          color: Colors.grey[700],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   Container(
                                     padding: EdgeInsets.symmetric(
@@ -441,7 +349,7 @@ class _ScreenAssignedpageState extends State<ScreenAssignedpage> {
                                 _buildDetailRow(
                                   icon: Icons.person_outline,
                                   label: "Client Name",
-                                  value: caseItem.customerType,
+                                  value: caseItem.clientName,
                                 ),
                                 ResponsiveSizedBox.height10,
                                 _buildDetailRow(
@@ -451,30 +359,32 @@ class _ScreenAssignedpageState extends State<ScreenAssignedpage> {
                                 ),
                                 ResponsiveSizedBox.height10,
 
-                                _buildDetailRow(
-                                  icon: Icons.phone_outlined,
-                                  label: "Mobile Number",
-                                  value: caseItem.customerPhoneNumber,
-                                ),
+                                                     _buildDetailRow(
+  icon: Icons.phone_outlined,
+  label: "Mobile Number",
+  value: caseItem.customerPhoneNumber,
+  onTap: () => _callPhoneNumber(caseItem.customerPhoneNumber),
+),
                                 ResponsiveSizedBox.height10,
                                 _buildDetailRow(
                                   icon: Icons.phone_outlined,
                                   label: "Alternive Mobile Number",
                                   value: caseItem.alternatePhoneNumber,
+                                    onTap: () => _callPhoneNumber(caseItem.alternatePhoneNumber),
                                 ),
-                                // ResponsiveSizedBox.height10,
-                                // _buildDetailRow(
-                                //   icon: Icons.phone_outlined,
-                                //   label: "Verification Type",
-                                //   value: caseItem.mobileNumber,
-                                // ),
+
                                 ResponsiveSizedBox.height10,
                                 _buildDetailRow(
                                   icon: Icons.location_city_outlined,
                                   label: "Location",
                                   value: caseItem.city,
                                 ),
-
+                                ResponsiveSizedBox.height10,
+                                _buildDetailRow(
+                                  icon: Icons.location_on_outlined,
+                                  label: addressInfo['label'] ?? 'Address',
+                                  value: addressInfo['value'] ?? '',
+                                ),
                                 ResponsiveSizedBox.height20,
 
                                 // Start Verification Button
@@ -485,10 +395,11 @@ class _ScreenAssignedpageState extends State<ScreenAssignedpage> {
                                       CustomNavigation.pushWithTransition(
                                         context,
                                         AddressVerificationPage(
-                                          sectionKey: "Present Residence",
-                                          verificationTypeId: "1",
+                                          sectionKey:
+                                              caseItem.verificationTypeName,
+                                          verificationTypeId:
+                                              caseItem.verificationTypeId,
                                           caseId: caseItem.caseId,
-
                                         ),
                                       );
                                     },
@@ -537,29 +448,126 @@ class _ScreenAssignedpageState extends State<ScreenAssignedpage> {
     required IconData icon,
     required String label,
     required String value,
+    VoidCallback? onTap, // 👈 new optional callback
   }) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: ResponsiveUtils.sp(4),
-          color: Appcolors.ksecondarycolor,
-        ),
-        SizedBox(width: ResponsiveUtils.wp(3)),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextStyles.caption(text: label, color: Colors.grey[600]),
-              TextStyles.medium(
-                text: value,
-                weight: FontWeight.w600,
-                color: Appcolors.kblackcolor,
-              ),
-            ],
+    return InkWell(
+      onTap: onTap,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            icon,
+            size: ResponsiveUtils.sp(4),
+            color: Appcolors.ksecondarycolor,
           ),
-        ),
-      ],
+          SizedBox(width: ResponsiveUtils.wp(3)),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextStyles.caption(text: label, color: Colors.grey[600]),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: ResponsiveUtils.sp(3.5),
+                    fontWeight: FontWeight.w600,
+                    color: Appcolors.kblackcolor,
+                    decoration: onTap != null
+                        ? TextDecoration.underline
+                        : TextDecoration.none, // optional underline
+                  ),
+                  softWrap: true,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
+
+  // Pick which PINCODE to show on top row
+  String _getAvailablePincode(dynamic caseItem) {
+    final presentPin = caseItem.presentAddressPincode ?? '';
+    final businessPin = caseItem.businessAddressPincode ?? '';
+    final permanentPin = caseItem.permanentAddressPincode ?? '';
+
+    if (presentPin.isNotEmpty) return presentPin;
+    if (businessPin.isNotEmpty) return businessPin;
+    if (permanentPin.isNotEmpty) return permanentPin;
+
+    return '-';
+  }
+
+  // Pick which ADDRESS to show in expanded view
+  Map<String, String> _getAvailableAddress(dynamic caseItem) {
+    final present = caseItem.presentAddress ?? '';
+    final business = caseItem.businessAddress ?? '';
+    final permanent = caseItem.permanentAddress ?? '';
+
+    if (present.isNotEmpty) {
+      return {'label': 'Present Address', 'value': present};
+    }
+    if (business.isNotEmpty) {
+      return {'label': 'Business Address', 'value': business};
+    }
+    if (permanent.isNotEmpty) {
+      return {'label': 'Permanent Address', 'value': permanent};
+    }
+
+    return {'label': 'Address', 'value': 'N/A'};
+  }
+  // Replace the existing getTimeRemaining and getTimerColor methods with these:
+
+String getTimeRemaining(DateTime createdAt) {
+  final deadline = createdAt.add(const Duration(hours: 4));
+  final now = DateTime.now();
+  final difference = deadline.difference(now);
+
+  if (difference.isNegative) {
+    return "EXPIRED";
+  }
+
+  final hours = difference.inHours;
+  final minutes = difference.inMinutes % 60;
+  final seconds = difference.inSeconds % 60;
+
+  return "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
+}
+
+Color getTimerColor(DateTime createdAt) {
+  final deadline = createdAt.add(const Duration(hours: 4));
+  final now = DateTime.now();
+  final difference = deadline.difference(now);
+
+  if (difference.isNegative) {
+    return Colors.red;
+  } else if (difference.inHours < 1) {
+    return Colors.red;
+  } else if (difference.inHours < 2) {
+    return Colors.orange;
+  } else {
+    return Colors.green;
+  }
+}
+
+// Helper method to parse the createdAt DateTime
+DateTime _parseCreatedAt(DateTimeInfo createdAtInfo) {
+  try {
+    return DateTime.parse(createdAtInfo.date);
+  } catch (e) {
+    // If parsing fails, return current time (will show as expired)
+    return DateTime.now().subtract(const Duration(hours: 5));
+  }
+}
+void _callPhoneNumber(String number) async {
+  final Uri uri = Uri(scheme: 'tel', path: number);
+
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri);
+  } else {
+    debugPrint("Could not launch dialer");
+  }
+}
 }
