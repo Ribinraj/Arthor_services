@@ -155,7 +155,7 @@ class _ScreenAssignedpageState extends State<ScreenAssignedpage> {
                 itemBuilder: (context, index) {
                   final caseItem = cases[index];
                   final isExpanded = expandedCaseId == caseItem.caseId;
-  final createdAtDateTime = _parseCreatedAt(caseItem.updatedAt);
+  final createdAtDateTime = _parseCreatedAt(caseItem.createdAt);
   final timeRemaining = getTimeRemaining(createdAtDateTime);
   final timerColor = getTimerColor(createdAtDateTime);
   final isExpired = timeRemaining == "EXPIRED";

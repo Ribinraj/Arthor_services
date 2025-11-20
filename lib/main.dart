@@ -25,7 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // Optional: initialize firebase here if you need (only if you use Firebase in background)
+  // Optional: initialize firebase here if you need (only if you use Firebase in background)  
   // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await PushNotifications.backgroundMessageHandler(message);
 }

@@ -10,6 +10,7 @@ import 'package:arthor/data/atributes_model.dart';
 import 'package:arthor/data/treceable_verificationmodel.dart' as traceable;
 import 'package:arthor/data/untreceable_verificationmodel.dart' as untraceable;
 import 'package:arthor/data/untreceablereason_model.dart';
+import 'package:arthor/presentation/blocs/fetch_assignedcases_bloc/fetch_assignedcases_bloc.dart';
 import 'package:arthor/presentation/blocs/forrm_submit_bloc/form_submit_bloc.dart';
 import 'package:arthor/presentation/blocs/fetch_atributes_bloc/fetch_atributes_bloc.dart';
 
@@ -760,53 +761,182 @@ void _submitTraceable() {
 
               if (state is FormSubmitSuccessState) {
                 Navigator.pop(context); // Close loading dialog
-                showDialog(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    title: Row(
-                      children: [
-                        Icon(Icons.check_circle, color: Colors.green, size: 28),
-                        const SizedBox(width: 12),
-                        const Text('Success!'),
-                      ],
-                    ),
-                    content: Text(state.message),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context); // Close dialog
-                          Navigator.pop(context); // Go back to previous screen
-                        },
-                        child: const Text('OK'),
-                      ),
-                    ],
-                  ),
-                );
+                    context.read<FetchAssignedcasesBloc>().add(
+      FetchAssignedcasesInitialFetchingEvent(),
+    );
+           showDialog(
+  context: context,
+  barrierDismissible: false,
+  builder: (_) => Dialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    elevation: 0,
+    backgroundColor: Colors.transparent,
+    child: Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Appcolors.kwhitecolor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Appcolors.ksecondarycolor, width: 2),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Success Icon with animated container
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Appcolors.kgreencolor.withOpacity(0.1),
+              shape: BoxShape.circle,
+              border: Border.all(color: Appcolors.kgreencolor, width: 2),
+            ),
+            child: Icon(
+              Icons.check_circle,
+              color: Appcolors.kgreencolor,
+              size: 48,
+            ),
+          ),
+          const SizedBox(height: 20),
+          
+          // Title
+          Text(
+            'Success!',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Appcolors.kprimarycolor,
+            ),
+          ),
+          const SizedBox(height: 12),
+          
+          // Message
+          Text(
+            state.message,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Appcolors.kblackcolor.withOpacity(0.7),
+            ),
+          ),
+          const SizedBox(height: 24),
+          
+          // Action Button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Close dialog
+                Navigator.pop(context); // Go back to previous screen
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Appcolors.kprimarycolor,
+                foregroundColor: Appcolors.kwhitecolor,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+              child: const Text(
+                'OK',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),
+);
               }
 
               if (state is FormSubmitErrorState) {
                 Navigator.pop(context); // Close loading dialog
-                showDialog(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    title: Row(
-                      children: [
-                        Icon(Icons.error_outline, color: Colors.red, size: 28),
-                        const SizedBox(width: 12),
-                        const Text('Error'),
-                      ],
-                    ),
-                    content: Text(state.message),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('OK'),
-                      ),
-                    ],
-                  ),
-                );
+       showDialog(
+  context: context,
+  barrierDismissible: false,
+  builder: (_) => Dialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    elevation: 0,
+    backgroundColor: Colors.transparent,
+    child: Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Appcolors.kwhitecolor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Appcolors.kprimarycolor, width: 2),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Error Icon with animated container
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Appcolors.kredcolor.withOpacity(0.1),
+              shape: BoxShape.circle,
+              border: Border.all(color: Appcolors.kredcolor, width: 2),
+            ),
+            child: Icon(
+              Icons.error_outline,
+              color: Appcolors.kredcolor,
+              size: 48,
+            ),
+          ),
+          const SizedBox(height: 20),
+          
+          // Title
+          Text(
+            'Error',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Appcolors.kprimarycolor,
+            ),
+          ),
+          const SizedBox(height: 12),
+          
+          // Message
+          Text(
+            state.message,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Appcolors.kblackcolor.withOpacity(0.7),
+            ),
+          ),
+          const SizedBox(height: 24),
+          
+          // Action Button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Appcolors.kredcolor,
+                foregroundColor: Appcolors.kwhitecolor,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+              child: const Text(
+                'OK',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),
+);
               }
             },
           ),
@@ -1145,12 +1275,12 @@ void _submitTraceable() {
                                       index,
                                     ),
                                   ),
-                                  const SizedBox(height: 16),
-                                  DocumentUploadCard(
-                                    document: _uploadedDocument,
-                                    onUploadPressed: _pickDocument,
-                                    onRemovePressed: _removeDocument,
-                                  ),
+                                  // const SizedBox(height: 16),
+                                  // DocumentUploadCard(
+                                  //   document: _uploadedDocument,
+                                  //   onUploadPressed: _pickDocument,
+                                  //   onRemovePressed: _removeDocument,
+                                  // ),
                                   const SizedBox(height: 24),
                                   SizedBox(
                                     width: double.infinity,
