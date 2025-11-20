@@ -69,161 +69,159 @@ class _ScreenDashboardpageState extends State<ScreenDashboardpage> {
         title: 'Arttherservice',
     
       ),
-      body: SafeArea(
-        child: RefreshIndicator(
-          color: Appcolors.kredcolor,
-          onRefresh: _onRefresh,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Padding(
-              padding: EdgeInsets.all(ResponsiveUtils.wp(5)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  ResponsiveSizedBox.height50,
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            ResponsiveText(
-                              'Welcome Back!',
-                              sizeFactor: 1.8,
-                              weight: FontWeight.bold,
-                              color: Appcolors.ksecondarycolor,
-                            ),
-                            ResponsiveSizedBox.height5,
-                            ResponsiveText(
-                              'Here\'s your service overview',
-                              sizeFactor: 0.95,
-                              weight: FontWeight.w500,
-                              color: Appcolors.kgreyColor,
-                            ),
-                          ],
-                        ),
+      body: RefreshIndicator(
+        color: Appcolors.kredcolor,
+        onRefresh: _onRefresh,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.all(ResponsiveUtils.wp(5)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ResponsiveSizedBox.height50,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ResponsiveText(
+                            'Welcome Back!',
+                            sizeFactor: 1.8,
+                            weight: FontWeight.bold,
+                            color: Appcolors.ksecondarycolor,
+                          ),
+                          ResponsiveSizedBox.height5,
+                          ResponsiveText(
+                            'Here\'s your service overview',
+                            sizeFactor: 0.95,
+                            weight: FontWeight.w500,
+                            color: Appcolors.kgreyColor,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-
-                  ResponsiveSizedBox.height40,
-
-                  Image.asset(
-                    Appconstants.applogo,
-                    height: ResponsiveUtils.hp(20),
-                  ),
-
-                  ResponsiveSizedBox.height40,
-
-                  // Dashboard cards area
-                  BlocBuilder<FetchDashboardBloc, FetchDashboardState>(
-                    builder: (context, state) {
-                      if (state is FetchDashboardLoadingState) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            EnhancedDashboardCardShimmer(),
-                            EnhancedDashboardCardShimmer(),
-                            EnhancedDashboardCardShimmer(),
-                          ],
-                        );
-                      } else if (state is FetchDashboardSuccessState) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                              onTap: (){
-                                navigateToMainPage(context, 1);
-                              },
-                              child: EnhancedDashboardCard(
-                                number: state
-                                        .dashboard.dashboard!.newCases ??
-                                    "",
-                                label: 'New',
-                                gradientColors: [
-                                  const Color.fromARGB(255, 174, 134, 40),
-                                  const Color.fromARGB(
-                                      255, 235, 217, 134),
-                                ],
-                                icon: Icons.fiber_new_rounded,
-                                glowColor: const Color.fromARGB(
-                                    255, 116, 112, 226),
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                navigateToMainPage(context, 2);
-                              },
-                              child: EnhancedDashboardCard(
-                                number: state.dashboard.dashboard!
-                                        .assignedCases ??
-                                    "",
-                                label: 'Assigned',
-                                gradientColors: [
-                                  const Color.fromARGB(255, 223, 44, 44),
-                                  const Color.fromARGB(
-                                      255, 195, 103, 103),
-                                ],
-                                icon: Icons
-                                    .assignment_turned_in_rounded,
-                                glowColor: const Color(0xFFf5576c),
-                              ),
-                            ),
-                            EnhancedDashboardCard(
-                              number: state.dashboard.dashboard!
-                                      .completedCases ??
+                    ),
+                  ],
+                ),
+      
+                ResponsiveSizedBox.height40,
+      
+                Image.asset(
+                  Appconstants.applogo,
+                  height: ResponsiveUtils.hp(20),
+                ),
+      
+                ResponsiveSizedBox.height40,
+      
+                // Dashboard cards area
+                BlocBuilder<FetchDashboardBloc, FetchDashboardState>(
+                  builder: (context, state) {
+                    if (state is FetchDashboardLoadingState) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          EnhancedDashboardCardShimmer(),
+                          EnhancedDashboardCardShimmer(),
+                          EnhancedDashboardCardShimmer(),
+                        ],
+                      );
+                    } else if (state is FetchDashboardSuccessState) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: (){
+                              navigateToMainPage(context, 1);
+                            },
+                            child: EnhancedDashboardCard(
+                              number: state
+                                      .dashboard.dashboard!.newCases ??
                                   "",
-                              label: 'Completed',
+                              label: 'New',
                               gradientColors: [
-                                const Color.fromARGB(255, 23, 131, 136),
+                                const Color.fromARGB(255, 174, 134, 40),
                                 const Color.fromARGB(
-                                    255, 118, 194, 234),
+                                    255, 235, 217, 134),
                               ],
-                              icon: Icons.check_circle_rounded,
-                              glowColor: const Color(0xFF00f2fe),
+                              icon: Icons.fiber_new_rounded,
+                              glowColor: const Color.fromARGB(
+                                  255, 116, 112, 226),
                             ),
-                          ],
-                        );
-                      } else if (state is FetchDashboardErrorState) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.error_outline,
-                              size: 40,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              navigateToMainPage(context, 2);
+                            },
+                            child: EnhancedDashboardCard(
+                              number: state.dashboard.dashboard!
+                                      .assignedCases ??
+                                  "",
+                              label: 'Assigned',
+                              gradientColors: [
+                                const Color.fromARGB(255, 223, 44, 44),
+                                const Color.fromARGB(
+                                    255, 195, 103, 103),
+                              ],
+                              icon: Icons
+                                  .assignment_turned_in_rounded,
+                              glowColor: const Color(0xFFf5576c),
+                            ),
+                          ),
+                          EnhancedDashboardCard(
+                            number: state.dashboard.dashboard!
+                                    .completedCases ??
+                                "",
+                            label: 'Completed',
+                            gradientColors: [
+                              const Color.fromARGB(255, 23, 131, 136),
+                              const Color.fromARGB(
+                                  255, 118, 194, 234),
+                            ],
+                            icon: Icons.check_circle_rounded,
+                            glowColor: const Color(0xFF00f2fe),
+                          ),
+                        ],
+                      );
+                    } else if (state is FetchDashboardErrorState) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.error_outline,
+                            size: 40,
+                            color: Colors.red,
+                          ),
+                          ResponsiveSizedBox.height10,
+                          Text(
+                            state.message,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
                               color: Colors.red,
+                              fontWeight: FontWeight.w500,
                             ),
-                            ResponsiveSizedBox.height10,
-                            Text(
-                              state.message,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            ResponsiveSizedBox.height10,
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                context
-                                    .read<FetchDashboardBloc>()
-                                    .add(
-                                        FetchDashboardInitialFetchingEvent());
-                              },
-                              icon: const Icon(Icons.refresh),
-                              label: const Text("Try again"),
-                            ),
-                          ],
-                        );
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    },
-                  ),
-
-                  ResponsiveSizedBox.height30,
-                ],
-              ),
+                          ),
+                          ResponsiveSizedBox.height10,
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              context
+                                  .read<FetchDashboardBloc>()
+                                  .add(
+                                      FetchDashboardInitialFetchingEvent());
+                            },
+                            icon: const Icon(Icons.refresh),
+                            label: const Text("Try again"),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                ),
+      
+                ResponsiveSizedBox.height30,
+              ],
             ),
           ),
         ),
