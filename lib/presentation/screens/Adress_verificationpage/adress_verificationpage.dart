@@ -10,7 +10,7 @@ import 'package:arthor/data/atributes_model.dart';
 import 'package:arthor/data/treceable_verificationmodel.dart' as traceable;
 import 'package:arthor/data/untreceable_verificationmodel.dart' as untraceable;
 import 'package:arthor/data/untreceablereason_model.dart';
-import 'package:arthor/presentation/blocs/bloc/form_submit_bloc.dart';
+import 'package:arthor/presentation/blocs/forrm_submit_bloc/form_submit_bloc.dart';
 import 'package:arthor/presentation/blocs/fetch_atributes_bloc/fetch_atributes_bloc.dart';
 
 import 'package:arthor/presentation/blocs/untreceable_reasons_bloc/untreceable_reasons_bloc.dart';

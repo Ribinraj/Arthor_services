@@ -225,133 +225,211 @@ class _ScreenNewcasespageState extends State<ScreenNewcasespage> {
                                   ),
                                   // Quick Action Buttons (only when not expanded)
                                   if (!isExpanded)
-                                    BlocConsumer<
-                                      CaseAcceptDeclineBloc,
-                                      CaseAcceptDeclineState
-                                    >(
-                                      listener: (context, state) {
-                                        if (state
-                                            is CaseAcceptdeclineSucessState) {
-                                          CustomSnackbar.show(
-                                            context,
-                                            message: state.message,
-                                            type: SnackbarType.success,
-                                          );
-                                          context.read<FetchNewcasesBloc>().add(
-                                            FetchNecasesInitialEvent(),
-                                          );
-                                        } else if (state
-                                            is CaseAcceptancedeclineErrorState) {
-                                          CustomSnackbar.show(
-                                            context,
-                                            message: state.message,
-                                            type: SnackbarType.success,
-                                          );
-                                        }
-                                      },
-                                      builder: (context, state) {
-                                        bool isAcceptLoading = false;
-                                        bool isRejectLoading = false;
+                                  BlocConsumer<CaseAcceptDeclineBloc, CaseAcceptDeclineState>(
+  listener: (context, state) {
+    // Only react for this caseItem
+    if (state is CaseAcceptdeclineSucessState && state.caseId == caseItem.caseId) {
+      CustomSnackbar.show(context, message: state.message, type: SnackbarType.success);
+      context.read<FetchNewcasesBloc>().add(FetchNecasesInitialEvent());
+    } else if (state is CaseAcceptancedeclineErrorState && state.caseId == caseItem.caseId) {
+      CustomSnackbar.show(context, message: state.message, type: SnackbarType.success);
+    }
+  },
+  builder: (context, state) {
+    bool isAcceptLoading = false;
+    bool isRejectLoading = false;
 
-                                        if (state
-                                            is CaseAcceptdeclineLoadingState) {
-                                          if (state.isAccepting) {
-                                            isAcceptLoading = true;
-                                          } else {
-                                            isRejectLoading = true;
-                                          }
-                                        }
+    if (state is CaseAcceptdeclineLoadingState && state.caseId == caseItem.caseId) {
+      if (state.isAccepting) {
+        isAcceptLoading = true;
+      } else {
+        isRejectLoading = true;
+      }
+    }
 
-                                        return Row(
-                                          children: [
-                                            // ✅ ACCEPT BUTTON
-                                            IconButton(
-                                              onPressed:
-                                                  (isAcceptLoading ||
-                                                      isRejectLoading)
-                                                  ? null
-                                                  : () {
-                                                      context
-                                                          .read<
-                                                            CaseAcceptDeclineBloc
-                                                          >()
-                                                          .add(
-                                                            CaseAcceptButtonClickEvent(
-                                                              caseId: caseItem
-                                                                  .caseId,
-                                                            ),
-                                                          );
-                                                      setState(() {
-                                                        expandedCaseId = null;
-                                                      });
-                                                    },
-                                              icon: isAcceptLoading
-                                                  ? const SizedBox(
-                                                      width: 22,
-                                                      height: 22,
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                            strokeWidth: 2,
-                                                          ),
-                                                    )
-                                                  : const Icon(
-                                                      Icons
-                                                          .check_circle_outline,
-                                                    ),
-                                              color: Colors.green,
-                                              iconSize: ResponsiveUtils.sp(7),
-                                              padding: EdgeInsets.zero,
-                                              constraints:
-                                                  const BoxConstraints(),
-                                            ),
+    return Row(
+      children: [
+        // ACCEPT ICON
+        IconButton(
+          onPressed: (isAcceptLoading || isRejectLoading)
+              ? null
+              : () {
+                  context.read<CaseAcceptDeclineBloc>().add(
+                        CaseAcceptButtonClickEvent(caseId: caseItem.caseId),
+                      );
+                  setState(() {
+                    expandedCaseId = null;
+                  });
+                },
+          icon: isAcceptLoading
+              ? const SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.check_circle_outline),
+          color: Colors.green,
+          iconSize: ResponsiveUtils.sp(7),
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+        ),
+        SizedBox(width: ResponsiveUtils.wp(2)),
+        // DECLINE ICON — should always be visible (unless loading)
+        IconButton(
+          onPressed: (isAcceptLoading || isRejectLoading)
+              ? null
+              : () {
+                  context.read<CaseAcceptDeclineBloc>().add(
+                        CaseDeclineButtonClickEvent(caseId: caseItem.caseId),
+                      );
+                  setState(() {
+                    expandedCaseId = null;
+                  });
+                },
+          icon: isRejectLoading
+              ? const SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.cancel_outlined),
+          color: Colors.red,
+          iconSize: ResponsiveUtils.sp(7),
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+        ),
+      ],
+    );
+  },
+),
 
-                                            SizedBox(
-                                              width: ResponsiveUtils.wp(2),
-                                            ),
+                                    // BlocConsumer<
+                                    //   CaseAcceptDeclineBloc,
+                                    //   CaseAcceptDeclineState
+                                    // >(
+                                    //   listener: (context, state) {
+                                    //     if (state
+                                    //         is CaseAcceptdeclineSucessState) {
+                                    //       CustomSnackbar.show(
+                                    //         context,
+                                    //         message: state.message,
+                                    //         type: SnackbarType.success,
+                                    //       );
+                                    //       context.read<FetchNewcasesBloc>().add(
+                                    //         FetchNecasesInitialEvent(),
+                                    //       );
+                                    //     } else if (state
+                                    //         is CaseAcceptancedeclineErrorState) {
+                                    //       CustomSnackbar.show(
+                                    //         context,
+                                    //         message: state.message,
+                                    //         type: SnackbarType.success,
+                                    //       );
+                                    //     }
+                                    //   },
+                                    //   builder: (context, state) {
+                                    //     bool isAcceptLoading = false;
+                                    //     bool isRejectLoading = false;
 
-                                            // ❌ DECLINE BUTTON
-                                            IconButton(
-                                              onPressed:
-                                                  (isAcceptLoading ||
-                                                      isRejectLoading)
-                                                  ? null
-                                                  : () {
-                                                      context
-                                                          .read<
-                                                            CaseAcceptDeclineBloc
-                                                          >()
-                                                          .add(
-                                                            CaseDeclineButtonClickEvent(
-                                                              caseId: caseItem
-                                                                  .caseId,
-                                                            ),
-                                                          );
-                                                      setState(() {
-                                                        expandedCaseId = null;
-                                                      });
-                                                    },
-                                              icon: isRejectLoading
-                                                  ? const SizedBox(
-                                                      width: 22,
-                                                      height: 22,
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                            strokeWidth: 2,
-                                                          ),
-                                                    )
-                                                  : const Icon(
-                                                      Icons.cancel_outlined,
-                                                    ),
-                                              color: Colors.red,
-                                              iconSize: ResponsiveUtils.sp(7),
-                                              padding: EdgeInsets.zero,
-                                              constraints:
-                                                  const BoxConstraints(),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
+                                    //     if (state
+                                    //         is CaseAcceptdeclineLoadingState) {
+                                    //       if (state.isAccepting) {
+                                    //         isAcceptLoading = true;
+                                    //       } else {
+                                    //         isRejectLoading = true;
+                                    //       }
+                                    //     }
+
+                                    //     return Row(
+                                    //       children: [
+                                    //         // ✅ ACCEPT BUTTON
+                                    //         IconButton(
+                                    //           onPressed:
+                                    //               (isAcceptLoading ||
+                                    //                   isRejectLoading)
+                                    //               ? null
+                                    //               : () {
+                                    //                   context
+                                    //                       .read<
+                                    //                         CaseAcceptDeclineBloc
+                                    //                       >()
+                                    //                       .add(
+                                    //                         CaseAcceptButtonClickEvent(
+                                    //                           caseId: caseItem
+                                    //                               .caseId,
+                                    //                         ),
+                                    //                       );
+                                    //                   setState(() {
+                                    //                     expandedCaseId = null;
+                                    //                   });
+                                    //                 },
+                                    //           icon: isAcceptLoading
+                                    //               ? const SizedBox(
+                                    //                   width: 22,
+                                    //                   height: 22,
+                                    //                   child:
+                                    //                       CircularProgressIndicator(
+                                    //                         strokeWidth: 2,
+                                    //                       ),
+                                    //                 )
+                                    //               : const Icon(
+                                    //                   Icons
+                                    //                       .check_circle_outline,
+                                    //                 ),
+                                    //           color: Colors.green,
+                                    //           iconSize: ResponsiveUtils.sp(7),
+                                    //           padding: EdgeInsets.zero,
+                                    //           constraints:
+                                    //               const BoxConstraints(),
+                                    //         ),
+
+                                    //         SizedBox(
+                                    //           width: ResponsiveUtils.wp(2),
+                                    //         ),
+
+                                    //         // ❌ DECLINE BUTTON
+                                    //         IconButton(
+                                    //           onPressed:
+                                    //               (isAcceptLoading ||
+                                    //                   isRejectLoading)
+                                    //               ? null
+                                    //               : () {
+                                    //                   context
+                                    //                       .read<
+                                    //                         CaseAcceptDeclineBloc
+                                    //                       >()
+                                    //                       .add(
+                                    //                         CaseDeclineButtonClickEvent(
+                                    //                           caseId: caseItem
+                                    //                               .caseId,
+                                    //                         ),
+                                    //                       );
+                                    //                   setState(() {
+                                    //                     expandedCaseId = null;
+                                    //                   });
+                                    //                 },
+                                    //           icon: isRejectLoading
+                                    //               ? const SizedBox(
+                                    //                   width: 22,
+                                    //                   height: 22,
+                                    //                   child:
+                                    //                       CircularProgressIndicator(
+                                    //                         strokeWidth: 2,
+                                    //                       ),
+                                    //                 )
+                                    //               : const Icon(
+                                    //                   Icons.cancel_outlined,
+                                    //                 ),
+                                    //           color: Colors.red,
+                                    //           iconSize: ResponsiveUtils.sp(7),
+                                    //           padding: EdgeInsets.zero,
+                                    //           constraints:
+                                    //               const BoxConstraints(),
+                                    //         ),
+                                    //       ],
+                                    //     );
+                                    //   },
+                                    // ),
 
             
                                 ],
@@ -522,28 +600,18 @@ class _ScreenNewcasespageState extends State<ScreenNewcasespage> {
                                 // Action Buttons
                                 BlocConsumer<CaseAcceptDeclineBloc, CaseAcceptDeclineState>(
   listener: (context, state) {
-    if (state is CaseAcceptdeclineSucessState) {
-      CustomSnackbar.show(
-        context,
-        message: state.message,
-        type: SnackbarType.success,
-      );
-      context.read<FetchNewcasesBloc>().add(
-            FetchNecasesInitialEvent(),
-          );
-    } else if (state is CaseAcceptancedeclineErrorState) {
-      CustomSnackbar.show(
-        context,
-        message: state.message,
-        type: SnackbarType.success, // ← keep as you wrote
-      );
+    if (state is CaseAcceptdeclineSucessState && state.caseId == caseItem.caseId) {
+      CustomSnackbar.show(context, message: state.message, type: SnackbarType.success);
+      context.read<FetchNewcasesBloc>().add(FetchNecasesInitialEvent());
+    } else if (state is CaseAcceptancedeclineErrorState && state.caseId == caseItem.caseId) {
+      CustomSnackbar.show(context, message: state.message, type: SnackbarType.success);
     }
   },
   builder: (context, state) {
     bool isAcceptLoading = false;
     bool isRejectLoading = false;
 
-    if (state is CaseAcceptdeclineLoadingState) {
+    if (state is CaseAcceptdeclineLoadingState && state.caseId == caseItem.caseId) {
       if (state.isAccepting) {
         isAcceptLoading = true;
       } else {
@@ -553,31 +621,20 @@ class _ScreenNewcasespageState extends State<ScreenNewcasespage> {
 
     return Row(
       children: [
-        // ✅ ACCEPT BUTTON (same UI, uses bloc)
         Expanded(
           child: ElevatedButton.icon(
             onPressed: (isAcceptLoading || isRejectLoading)
                 ? null
                 : () {
-                    context
-                        .read<CaseAcceptDeclineBloc>()
-                        .add(
-                          CaseAcceptButtonClickEvent(
-                            caseId: caseItem.caseId,
-                          ),
+                    context.read<CaseAcceptDeclineBloc>().add(
+                          CaseAcceptButtonClickEvent(caseId: caseItem.caseId),
                         );
                     setState(() {
                       expandedCaseId = null;
                     });
                   },
             icon: isAcceptLoading
-                ? const SizedBox(
-                    width: 22,
-                    height: 22,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
-                  )
+                ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2))
                 : const Icon(Icons.check_circle),
             label: TextStyles.body(
               text: "Accept",
@@ -587,44 +644,27 @@ class _ScreenNewcasespageState extends State<ScreenNewcasespage> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
               foregroundColor: Appcolors.kwhitecolor,
-              padding: EdgeInsets.symmetric(
-                vertical: ResponsiveUtils.hp(1.5),
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadiusStyles.kradius10(),
-              ),
+              padding: EdgeInsets.symmetric(vertical: ResponsiveUtils.hp(1.5)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadiusStyles.kradius10()),
               elevation: 0,
             ),
           ),
         ),
-
         SizedBox(width: ResponsiveUtils.wp(3)),
-
-        // ❌ REJECT BUTTON (same UI, uses bloc)
         Expanded(
           child: ElevatedButton.icon(
             onPressed: (isAcceptLoading || isRejectLoading)
                 ? null
                 : () {
-                    context
-                        .read<CaseAcceptDeclineBloc>()
-                        .add(
-                          CaseDeclineButtonClickEvent(
-                            caseId: caseItem.caseId,
-                          ),
+                    context.read<CaseAcceptDeclineBloc>().add(
+                          CaseDeclineButtonClickEvent(caseId: caseItem.caseId),
                         );
                     setState(() {
                       expandedCaseId = null;
                     });
                   },
             icon: isRejectLoading
-                ? const SizedBox(
-                    width: 22,
-                    height: 22,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
-                  )
+                ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2))
                 : const Icon(Icons.cancel),
             label: TextStyles.body(
               text: "Reject",
@@ -634,12 +674,8 @@ class _ScreenNewcasespageState extends State<ScreenNewcasespage> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
               foregroundColor: Appcolors.kwhitecolor,
-              padding: EdgeInsets.symmetric(
-                vertical: ResponsiveUtils.hp(1.5),
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadiusStyles.kradius10(),
-              ),
+              padding: EdgeInsets.symmetric(vertical: ResponsiveUtils.hp(1.5)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadiusStyles.kradius10()),
               elevation: 0,
             ),
           ),
@@ -647,7 +683,136 @@ class _ScreenNewcasespageState extends State<ScreenNewcasespage> {
       ],
     );
   },
-)
+),
+
+//                                 BlocConsumer<CaseAcceptDeclineBloc, CaseAcceptDeclineState>(
+//   listener: (context, state) {
+//     if (state is CaseAcceptdeclineSucessState) {
+//       CustomSnackbar.show(
+//         context,
+//         message: state.message,
+//         type: SnackbarType.success,
+//       );
+//       context.read<FetchNewcasesBloc>().add(
+//             FetchNecasesInitialEvent(),
+//           );
+//     } else if (state is CaseAcceptancedeclineErrorState) {
+//       CustomSnackbar.show(
+//         context,
+//         message: state.message,
+//         type: SnackbarType.success, // ← keep as you wrote
+//       );
+//     }
+//   },
+//   builder: (context, state) {
+//     bool isAcceptLoading = false;
+//     bool isRejectLoading = false;
+
+//     if (state is CaseAcceptdeclineLoadingState) {
+//       if (state.isAccepting) {
+//         isAcceptLoading = true;
+//       } else {
+//         isRejectLoading = true;
+//       }
+//     }
+
+//     return Row(
+//       children: [
+//         // ✅ ACCEPT BUTTON (same UI, uses bloc)
+//         Expanded(
+//           child: ElevatedButton.icon(
+//             onPressed: (isAcceptLoading || isRejectLoading)
+//                 ? null
+//                 : () {
+//                     context
+//                         .read<CaseAcceptDeclineBloc>()
+//                         .add(
+//                           CaseAcceptButtonClickEvent(
+//                             caseId: caseItem.caseId,
+//                           ),
+//                         );
+//                     setState(() {
+//                       expandedCaseId = null;
+//                     });
+//                   },
+//             icon: isAcceptLoading
+//                 ? const SizedBox(
+//                     width: 22,
+//                     height: 22,
+//                     child: CircularProgressIndicator(
+//                       strokeWidth: 2,
+//                     ),
+//                   )
+//                 : const Icon(Icons.check_circle),
+//             label: TextStyles.body(
+//               text: "Accept",
+//               weight: FontWeight.w600,
+//               color: Appcolors.kwhitecolor,
+//             ),
+//             style: ElevatedButton.styleFrom(
+//               backgroundColor: Colors.green,
+//               foregroundColor: Appcolors.kwhitecolor,
+//               padding: EdgeInsets.symmetric(
+//                 vertical: ResponsiveUtils.hp(1.5),
+//               ),
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadiusStyles.kradius10(),
+//               ),
+//               elevation: 0,
+//             ),
+//           ),
+//         ),
+
+//         SizedBox(width: ResponsiveUtils.wp(3)),
+
+//         // ❌ REJECT BUTTON (same UI, uses bloc)
+//         Expanded(
+//           child: ElevatedButton.icon(
+//             onPressed: (isAcceptLoading || isRejectLoading)
+//                 ? null
+//                 : () {
+//                     context
+//                         .read<CaseAcceptDeclineBloc>()
+//                         .add(
+//                           CaseDeclineButtonClickEvent(
+//                             caseId: caseItem.caseId,
+//                           ),
+//                         );
+//                     setState(() {
+//                       expandedCaseId = null;
+//                     });
+//                   },
+//             icon: isRejectLoading
+//                 ? const SizedBox(
+//                     width: 22,
+//                     height: 22,
+//                     child: CircularProgressIndicator(
+//                       strokeWidth: 2,
+//                     ),
+//                   )
+//                 : const Icon(Icons.cancel),
+//             label: TextStyles.body(
+//               text: "Reject",
+//               weight: FontWeight.w600,
+//               color: Appcolors.kwhitecolor,
+//             ),
+//             style: ElevatedButton.styleFrom(
+//               backgroundColor: Colors.red,
+//               foregroundColor: Appcolors.kwhitecolor,
+//               padding: EdgeInsets.symmetric(
+//                 vertical: ResponsiveUtils.hp(1.5),
+//               ),
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadiusStyles.kradius10(),
+//               ),
+//               elevation: 0,
+//             ),
+//           ),
+//         ),
+//       ],
+//     );
+//   },
+// )
 
                               ],
                             ],
