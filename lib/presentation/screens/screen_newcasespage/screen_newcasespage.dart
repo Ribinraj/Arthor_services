@@ -117,23 +117,31 @@ class _ScreenNewcasespageState extends State<ScreenNewcasespage> {
 
             // Empty State
             if (cases.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.inbox_outlined,
-                      size: ResponsiveUtils.sp(15),
-                      color: Colors.grey,
-                    ),
-                    ResponsiveSizedBox.height20,
-                    TextStyles.subheadline(
-                      text: "No new cases available",
-                      color: Colors.grey,
-                    ),
-                  ],
-                ),
-              );
+    return RefreshIndicator(
+  onRefresh: () async {
+    context.read<FetchNewcasesBloc>().add(FetchNecasesInitialEvent());
+  },
+  color: Appcolors.kprimarycolor,
+  child: ListView(
+    physics: const AlwaysScrollableScrollPhysics(),
+    children: [
+      SizedBox(height: ResponsiveUtils.hp(25)),
+      Icon(
+        Icons.inbox_outlined,
+        size: ResponsiveUtils.sp(15),
+        color: Colors.grey,
+      ),
+      ResponsiveSizedBox.height20,
+      Center(
+        child: TextStyles.subheadline(
+          text: "No new cases available",
+          color: Colors.grey,
+        ),
+      ),
+    ],
+  ),
+);
+
             }
 
             return RefreshIndicator(
@@ -357,134 +365,6 @@ class _ScreenNewcasespageState extends State<ScreenNewcasespage> {
                                         );
                                       },
                                     ),
-
-                                  // BlocConsumer<
-                                  //   CaseAcceptDeclineBloc,
-                                  //   CaseAcceptDeclineState
-                                  // >(
-                                  //   listener: (context, state) {
-                                  //     if (state
-                                  //         is CaseAcceptdeclineSucessState) {
-                                  //       CustomSnackbar.show(
-                                  //         context,
-                                  //         message: state.message,
-                                  //         type: SnackbarType.success,
-                                  //       );
-                                  //       context.read<FetchNewcasesBloc>().add(
-                                  //         FetchNecasesInitialEvent(),
-                                  //       );
-                                  //     } else if (state
-                                  //         is CaseAcceptancedeclineErrorState) {
-                                  //       CustomSnackbar.show(
-                                  //         context,
-                                  //         message: state.message,
-                                  //         type: SnackbarType.success,
-                                  //       );
-                                  //     }
-                                  //   },
-                                  //   builder: (context, state) {
-                                  //     bool isAcceptLoading = false;
-                                  //     bool isRejectLoading = false;
-
-                                  //     if (state
-                                  //         is CaseAcceptdeclineLoadingState) {
-                                  //       if (state.isAccepting) {
-                                  //         isAcceptLoading = true;
-                                  //       } else {
-                                  //         isRejectLoading = true;
-                                  //       }
-                                  //     }
-
-                                  //     return Row(
-                                  //       children: [
-                                  //         // ✅ ACCEPT BUTTON
-                                  //         IconButton(
-                                  //           onPressed:
-                                  //               (isAcceptLoading ||
-                                  //                   isRejectLoading)
-                                  //               ? null
-                                  //               : () {
-                                  //                   context
-                                  //                       .read<
-                                  //                         CaseAcceptDeclineBloc
-                                  //                       >()
-                                  //                       .add(
-                                  //                         CaseAcceptButtonClickEvent(
-                                  //                           caseId: caseItem
-                                  //                               .caseId,
-                                  //                         ),
-                                  //                       );
-                                  //                   setState(() {
-                                  //                     expandedCaseId = null;
-                                  //                   });
-                                  //                 },
-                                  //           icon: isAcceptLoading
-                                  //               ? const SizedBox(
-                                  //                   width: 22,
-                                  //                   height: 22,
-                                  //                   child:
-                                  //                       CircularProgressIndicator(
-                                  //                         strokeWidth: 2,
-                                  //                       ),
-                                  //                 )
-                                  //               : const Icon(
-                                  //                   Icons
-                                  //                       .check_circle_outline,
-                                  //                 ),
-                                  //           color: Colors.green,
-                                  //           iconSize: ResponsiveUtils.sp(7),
-                                  //           padding: EdgeInsets.zero,
-                                  //           constraints:
-                                  //               const BoxConstraints(),
-                                  //         ),
-
-                                  //         SizedBox(
-                                  //           width: ResponsiveUtils.wp(2),
-                                  //         ),
-
-                                  //         // ❌ DECLINE BUTTON
-                                  //         IconButton(
-                                  //           onPressed:
-                                  //               (isAcceptLoading ||
-                                  //                   isRejectLoading)
-                                  //               ? null
-                                  //               : () {
-                                  //                   context
-                                  //                       .read<
-                                  //                         CaseAcceptDeclineBloc
-                                  //                       >()
-                                  //                       .add(
-                                  //                         CaseDeclineButtonClickEvent(
-                                  //                           caseId: caseItem
-                                  //                               .caseId,
-                                  //                         ),
-                                  //                       );
-                                  //                   setState(() {
-                                  //                     expandedCaseId = null;
-                                  //                   });
-                                  //                 },
-                                  //           icon: isRejectLoading
-                                  //               ? const SizedBox(
-                                  //                   width: 22,
-                                  //                   height: 22,
-                                  //                   child:
-                                  //                       CircularProgressIndicator(
-                                  //                         strokeWidth: 2,
-                                  //                       ),
-                                  //                 )
-                                  //               : const Icon(
-                                  //                   Icons.cancel_outlined,
-                                  //                 ),
-                                  //           color: Colors.red,
-                                  //           iconSize: ResponsiveUtils.sp(7),
-                                  //           padding: EdgeInsets.zero,
-                                  //           constraints:
-                                  //               const BoxConstraints(),
-                                  //         ),
-                                  //       ],
-                                  //     );
-                                  //   },
-                                  // ),
                                 ],
                               ),
 
@@ -810,135 +690,6 @@ class _ScreenNewcasespageState extends State<ScreenNewcasespage> {
                                     );
                                   },
                                 ),
-
-                                //                                 BlocConsumer<CaseAcceptDeclineBloc, CaseAcceptDeclineState>(
-                                //   listener: (context, state) {
-                                //     if (state is CaseAcceptdeclineSucessState) {
-                                //       CustomSnackbar.show(
-                                //         context,
-                                //         message: state.message,
-                                //         type: SnackbarType.success,
-                                //       );
-                                //       context.read<FetchNewcasesBloc>().add(
-                                //             FetchNecasesInitialEvent(),
-                                //           );
-                                //     } else if (state is CaseAcceptancedeclineErrorState) {
-                                //       CustomSnackbar.show(
-                                //         context,
-                                //         message: state.message,
-                                //         type: SnackbarType.success, // ← keep as you wrote
-                                //       );
-                                //     }
-                                //   },
-                                //   builder: (context, state) {
-                                //     bool isAcceptLoading = false;
-                                //     bool isRejectLoading = false;
-
-                                //     if (state is CaseAcceptdeclineLoadingState) {
-                                //       if (state.isAccepting) {
-                                //         isAcceptLoading = true;
-                                //       } else {
-                                //         isRejectLoading = true;
-                                //       }
-                                //     }
-
-                                //     return Row(
-                                //       children: [
-                                //         // ✅ ACCEPT BUTTON (same UI, uses bloc)
-                                //         Expanded(
-                                //           child: ElevatedButton.icon(
-                                //             onPressed: (isAcceptLoading || isRejectLoading)
-                                //                 ? null
-                                //                 : () {
-                                //                     context
-                                //                         .read<CaseAcceptDeclineBloc>()
-                                //                         .add(
-                                //                           CaseAcceptButtonClickEvent(
-                                //                             caseId: caseItem.caseId,
-                                //                           ),
-                                //                         );
-                                //                     setState(() {
-                                //                       expandedCaseId = null;
-                                //                     });
-                                //                   },
-                                //             icon: isAcceptLoading
-                                //                 ? const SizedBox(
-                                //                     width: 22,
-                                //                     height: 22,
-                                //                     child: CircularProgressIndicator(
-                                //                       strokeWidth: 2,
-                                //                     ),
-                                //                   )
-                                //                 : const Icon(Icons.check_circle),
-                                //             label: TextStyles.body(
-                                //               text: "Accept",
-                                //               weight: FontWeight.w600,
-                                //               color: Appcolors.kwhitecolor,
-                                //             ),
-                                //             style: ElevatedButton.styleFrom(
-                                //               backgroundColor: Colors.green,
-                                //               foregroundColor: Appcolors.kwhitecolor,
-                                //               padding: EdgeInsets.symmetric(
-                                //                 vertical: ResponsiveUtils.hp(1.5),
-                                //               ),
-                                //               shape: RoundedRectangleBorder(
-                                //                 borderRadius: BorderRadiusStyles.kradius10(),
-                                //               ),
-                                //               elevation: 0,
-                                //             ),
-                                //           ),
-                                //         ),
-
-                                //         SizedBox(width: ResponsiveUtils.wp(3)),
-
-                                //         // ❌ REJECT BUTTON (same UI, uses bloc)
-                                //         Expanded(
-                                //           child: ElevatedButton.icon(
-                                //             onPressed: (isAcceptLoading || isRejectLoading)
-                                //                 ? null
-                                //                 : () {
-                                //                     context
-                                //                         .read<CaseAcceptDeclineBloc>()
-                                //                         .add(
-                                //                           CaseDeclineButtonClickEvent(
-                                //                             caseId: caseItem.caseId,
-                                //                           ),
-                                //                         );
-                                //                     setState(() {
-                                //                       expandedCaseId = null;
-                                //                     });
-                                //                   },
-                                //             icon: isRejectLoading
-                                //                 ? const SizedBox(
-                                //                     width: 22,
-                                //                     height: 22,
-                                //                     child: CircularProgressIndicator(
-                                //                       strokeWidth: 2,
-                                //                     ),
-                                //                   )
-                                //                 : const Icon(Icons.cancel),
-                                //             label: TextStyles.body(
-                                //               text: "Reject",
-                                //               weight: FontWeight.w600,
-                                //               color: Appcolors.kwhitecolor,
-                                //             ),
-                                //             style: ElevatedButton.styleFrom(
-                                //               backgroundColor: Colors.red,
-                                //               foregroundColor: Appcolors.kwhitecolor,
-                                //               padding: EdgeInsets.symmetric(
-                                //                 vertical: ResponsiveUtils.hp(1.5),
-                                //               ),
-                                //               shape: RoundedRectangleBorder(
-                                //                 borderRadius: BorderRadiusStyles.kradius10(),
-                                //               ),
-                                //               elevation: 0,
-                                //             ),
-                                //           ),
-                                //         ),
-                                //       ],
-                                //     );
-                                //   },
-                                // )
                               ],
                             ],
                           ),

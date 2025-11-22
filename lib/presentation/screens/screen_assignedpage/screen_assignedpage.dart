@@ -121,23 +121,32 @@ class _ScreenAssignedpageState extends State<ScreenAssignedpage> {
           if (state is FetchAssignedcasesSuccesstate) {
             final cases = state.assignedcases;
             if (cases.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.inbox_outlined,
-                      size: ResponsiveUtils.sp(15),
-                      color: Colors.grey,
-                    ),
-                    ResponsiveSizedBox.height20,
-                    TextStyles.subheadline(
-                      text: "No Assigned cases available",
-                      color: Colors.grey,
-                    ),
-                  ],
-                ),
-              );
+             return RefreshIndicator(
+      onRefresh: () async {
+        context.read<FetchAssignedcasesBloc>().add(
+          FetchAssignedcasesInitialFetchingEvent(),
+        );
+      },
+      color: Appcolors.kprimarycolor,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: [
+          SizedBox(height: ResponsiveUtils.hp(25)),
+          Icon(
+            Icons.inbox_outlined,
+            size: ResponsiveUtils.sp(15),
+            color: Colors.grey,
+          ),
+          ResponsiveSizedBox.height20,
+          Center(
+            child: TextStyles.subheadline(
+              text: "No Assigned cases available",
+              color: Colors.grey,
+            ),
+          ),
+        ],
+      ),
+    );
             }
             return RefreshIndicator(
               onRefresh: () async {

@@ -1340,7 +1340,7 @@ import 'package:arthor/presentation/screens/Adress_verificationpage/widgets/veri
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -1367,7 +1367,7 @@ class AddressVerificationPage extends StatefulWidget {
 
 class _AddressVerificationPageState extends State<AddressVerificationPage> {
   final _formKey = GlobalKey<FormState>();
-  final ImagePicker _picker = ImagePicker();
+  // final ImagePicker _picker = ImagePicker();
 
   // Image and document storage with metadata (now includes base64)
   List<Map<String, dynamic>> _capturedImages = [];
@@ -1637,26 +1637,37 @@ class _AddressVerificationPageState extends State<AddressVerificationPage> {
         _cachedLocationData = loc;
       }
 
-      final cameras = await availableCameras();
-      if (cameras.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No camera available'),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
+ final cameras = await availableCameras();
+if (cameras.isEmpty) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text('No camera available'),
+      backgroundColor: Colors.red,
+    ),
+  );
+  return;
+}
 
-      final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CameraWithWatermark(
-            camera: cameras.first,
-            locationData: _cachedLocationData!,
-          ),
-        ),
-      );
+// Default to back camera index if available
+int initialIndex = 0;
+final backIndex = cameras.indexWhere(
+  (c) => c.lensDirection == CameraLensDirection.back,
+);
+if (backIndex != -1) {
+  initialIndex = backIndex;
+}
+
+final result = await Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (context) => CameraWithWatermark(
+      cameras: cameras,
+      initialCameraIndex: initialIndex,
+      locationData: _cachedLocationData!,
+    ),
+  ),
+);
+
 
       if (result != null && result is Map && result['image'] != null) {
         final XFile photo = result['image'] as XFile;
