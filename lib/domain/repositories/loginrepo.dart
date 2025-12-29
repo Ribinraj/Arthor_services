@@ -147,7 +147,7 @@ Future<void> updatetoken({required String token}) async {
 
     log("--------------------------------------------------");
     log("🔐 USER TOKEN CHECK");
-    log("User Token: ${userToken != null && userToken.isNotEmpty ? userToken : "❌ NO TOKEN FOUND"}");
+    log("User Token: ${userToken.isNotEmpty ? userToken : "❌ NO TOKEN FOUND"}");
     log("--------------------------------------------------");
 
     log("📤 Sending FCM Token Update Request...");

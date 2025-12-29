@@ -55,8 +55,8 @@ class Attachment {
 
   Map<String, dynamic> toJson() {
     return {
-      "latitude": latitude,
-      "longitude": longitude,
+      "latt": latitude,
+      "long": longitude,
       "dateTime": dateTime,
       "fileName": fileName,
       "file": file,
@@ -66,8 +66,8 @@ class Attachment {
 
   factory Attachment.fromJson(Map<String, dynamic> json) {
     return Attachment(
-      latitude: json["latitude"],
-      longitude: json["longitude"],
+      latitude: json["latt"],
+      longitude: json["long"],
       dateTime: json["dateTime"],
       fileName: json["fileName"],
       file: json["file"],
