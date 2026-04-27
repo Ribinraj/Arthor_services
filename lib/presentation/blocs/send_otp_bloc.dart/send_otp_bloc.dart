@@ -17,15 +17,21 @@ class SendOtpBloc extends Bloc<SendOtpEvent, SendOtpState> {
   }
 
   FutureOr<void> sendotp(
-      SendOtpButtonClickEvent event, Emitter<SendOtpState> emit) async {
+    SendOtpButtonClickEvent event,
+    Emitter<SendOtpState> emit,
+  ) async {
     emit(SendOtpLoadingState());
     try {
-      final response =
-          await repository.sendOtp(mobileNumber: event.mobileNumber);
+      final response = await repository.sendOtp(
+        mobileNumber: event.mobileNumber,
+      );
       if (!response.error && response.status == 200) {
-
-     
-        emit(SendOtpSuccessState(executiveId:response.data!));
+        emit(
+          SendOtpSuccessState(
+            loginId: response.data!.id,
+            loginType: response.data!.loginType,
+          ),
+        );
       } else {
         emit(SendOtpErrorState(message: response.message));
       }

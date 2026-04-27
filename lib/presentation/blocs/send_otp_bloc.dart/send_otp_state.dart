@@ -4,16 +4,14 @@ part of 'send_otp_bloc.dart';
 sealed class SendOtpState {}
 
 final class SendOtpInitial extends SendOtpState {}
+
 final class SendOtpLoadingState extends SendOtpState {}
 
 final class SendOtpSuccessState extends SendOtpState {
-  final String executiveId;
+  final String loginId;
+  final String loginType;
 
-
-  SendOtpSuccessState({required this.executiveId});
-
-
-
+  SendOtpSuccessState({required this.loginId, required this.loginType});
 }
 
 final class SendOtpErrorState extends SendOtpState {

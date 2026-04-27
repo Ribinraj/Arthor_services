@@ -48,10 +48,15 @@ class _LoginScreenState extends State<ScreenLoginpage> {
 
   void _handleSendOtp() {
     if (_formKey.currentState!.validate()) {
-context.read<SendOtpBloc>().add(SendOtpButtonClickEvent(mobileNumber:_mobileController.text));
-    }
-    else{
-      CustomSnackbar.show(context, message: "Please fill Required fields", type:SnackbarType.error);
+      context.read<SendOtpBloc>().add(
+        SendOtpButtonClickEvent(mobileNumber: _mobileController.text),
+      );
+    } else {
+      CustomSnackbar.show(
+        context,
+        message: "Please fill Required fields",
+        type: SnackbarType.error,
+      );
     }
   }
 
@@ -162,22 +167,32 @@ context.read<SendOtpBloc>().add(SendOtpButtonClickEvent(mobileNumber:_mobileCont
                       SizedBox(height: ResponsiveUtils.hp(4)),
                       BlocConsumer<SendOtpBloc, SendOtpState>(
                         listener: (context, state) {
-                       if (state is SendOtpSuccessState) {
-                         CustomNavigation.pushReplaceWithTransition(context, OtpVerificationPage(executiveId:state.executiveId, mobileNumber:_mobileController.text));
-                       }
-                       else if(state is SendOtpErrorState){
-                        CustomSnackbar.show(context, message:state.message, type:SnackbarType.error);
-                       }
+                          if (state is SendOtpSuccessState) {
+                            CustomNavigation.pushReplaceWithTransition(
+                              context,
+                              OtpVerificationPage(
+                                loginId: state.loginId,
+                                loginType: state.loginType,
+                                mobileNumber: _mobileController.text,
+                              ),
+                            );
+                          } else if (state is SendOtpErrorState) {
+                            CustomSnackbar.show(
+                              context,
+                              message: state.message,
+                              type: SnackbarType.error,
+                            );
+                          }
                         },
                         builder: (context, state) {
                           if (state is SendOtpLoadingState) {
-                                 return CustomSqureLoadingButton(
-                                loading: SpinKitCircle(
-                                  size: 20,
-                                  color: Appcolors.kwhitecolor,
-                                ),
-                                color: Appcolors.kblackcolor,
-                              );
+                            return CustomSqureLoadingButton(
+                              loading: SpinKitCircle(
+                                size: 20,
+                                color: Appcolors.kwhitecolor,
+                              ),
+                              color: Appcolors.kblackcolor,
+                            );
                           }
                           return SizedBox(
                             width: double.infinity,
@@ -205,7 +220,6 @@ context.read<SendOtpBloc>().add(SendOtpButtonClickEvent(mobileNumber:_mobileCont
                           );
                         },
                       ),
-       
                     ],
                   ),
                 ),

@@ -13,13 +13,18 @@ class ResendOtpBloc extends Bloc<ResendOtpEvent, ResendOtpState> {
     on<ResendOtpEvent>((event, emit) {
       // TODO: implement event handler
     });
-     on<ResendOtpClickEvent>(resentotp);
+    on<ResendOtpClickEvent>(resentotp);
   }
-    FutureOr<void> resentotp(
-      ResendOtpClickEvent event, Emitter<ResendOtpState> emit) async {
+  FutureOr<void> resentotp(
+    ResendOtpClickEvent event,
+    Emitter<ResendOtpState> emit,
+  ) async {
     emit(ResendOtpLoadingState());
     try {
-      final response = await repository.resendotp(executiveId: event.executiveId);
+      final response = await repository.resendotp(
+        loginId: event.loginId,
+        loginType: event.loginType,
+      );
       if (!response.error && response.status == 200) {
         emit(ResendOtpSuccessState(message: response.message));
       } else {

@@ -1,15 +1,19 @@
-
 import 'package:arthor/core/colors.dart';
 import 'package:arthor/core/responsiveutils.dart';
 import 'package:arthor/presentation/blocs/bottom_navigation_bloc/bottom_navigation_bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 
 class BottomNavigationWidget extends StatelessWidget {
   final void Function(int)? onTap;
-  const BottomNavigationWidget({super.key, required this.onTap});
+  final bool isLeadExecutive;
+
+  const BottomNavigationWidget({
+    super.key,
+    required this.onTap,
+    required this.isLeadExecutive,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +58,17 @@ class BottomNavigationWidget extends StatelessWidget {
                 ),
                 label: "Dashboard",
               ),
+              //         BottomNavigationBarItem(
+              //   icon: Icon(
+              //     Icons.assignment_ind,
+              //     size: ResponsiveUtils.wp(7),
+              //   ),
+              //   activeIcon: Icon(
+              //     Icons.assignment_ind_outlined,
+              //     size: ResponsiveUtils.wp(7),
+              //   ),
+              //   label: "Assign Cases",
+              // ),
               BottomNavigationBarItem(
                 icon: Icon(
                   Icons.note_add_outlined,
@@ -76,6 +91,18 @@ class BottomNavigationWidget extends StatelessWidget {
                 ),
                 label: "Assigned",
               ),
+              if (isLeadExecutive)
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    CupertinoIcons.person_2,
+                    size: ResponsiveUtils.wp(7),
+                  ),
+                  activeIcon: Icon(
+                    CupertinoIcons.person_2_fill,
+                    size: ResponsiveUtils.wp(7),
+                  ),
+                  label: "Assign Cases",
+                ),
             ],
           ),
         );

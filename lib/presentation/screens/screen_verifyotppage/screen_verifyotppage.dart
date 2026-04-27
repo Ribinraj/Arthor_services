@@ -23,13 +23,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class OtpVerificationPage extends StatefulWidget {
-  final String executiveId;
+  final String loginId;
+  final String loginType;
   final String mobileNumber;
-  
+
   const OtpVerificationPage({
     super.key,
-    required this.executiveId,
-    required this.mobileNumber, 
+    required this.loginId,
+    required this.loginType,
+    required this.mobileNumber,
   });
 
   @override
@@ -88,18 +90,16 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
 
   void _resendOtp() {
     if (!mounted) return;
-    if (_otpController.hasListeners) {
-      _otpController.clear();
-    }
+    _otpController.clear();
     setState(() {
       _currentOtp = '';
       _isButtonEnabled = false;
     });
     _resetResendTimer();
-    
+
     // Call resend OTP API
     context.read<ResendOtpBloc>().add(
-      ResendOtpClickEvent(executiveId: widget.executiveId),
+      ResendOtpClickEvent(loginId: widget.loginId, loginType: widget.loginType),
     );
   }
 
@@ -139,7 +139,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
               ),
             ),
           ),
-          
+
           // Bottom Section - Expands to fill remaining space
           Expanded(
             child: Container(
@@ -161,7 +161,8 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                       TextStyles.headline(text: 'Verification Code'),
                       ResponsiveSizedBox.height10,
                       TextStyles.body(
-                        text: 'We have sent a verification code to ${widget.mobileNumber}',
+                        text:
+                            'We have sent a verification code to ${widget.mobileNumber}',
                         weight: FontWeight.w500,
                       ),
                       ResponsiveSizedBox.height30,
@@ -191,7 +192,9 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                         animationDuration: const Duration(milliseconds: 300),
                         enableActiveFill: true,
                         keyboardType: TextInputType.number,
-                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                         onCompleted: (value) {
                           if (!mounted) return;
                           setState(() {
@@ -211,19 +214,22 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                       SizedBox(
                         width: double.infinity,
                         height: 50,
-                 
+
                         child: BlocConsumer<VerifyOtpBloc, VerifyOtpState>(
                           listener: (context, state) {
                             if (state is VerifyOtpSuccessState) {
-                         
-                                CustomNavigation.pushReplaceWithTransition(
-                                  context,
-                                  ScreenMainPage(),
-                                );
-               
-                               PushNotifications().sendTokenToServer();
+                              CustomNavigation.pushReplaceWithTransition(
+                                context,
+                                ScreenMainPage(),
+                              );
+
+                              PushNotifications().sendTokenToServer();
                             } else if (state is VerifyOtpErrorState) {
-                              CustomSnackbar.show(context, message: state.message, type: SnackbarType.error);
+                              CustomSnackbar.show(
+                                context,
+                                message: state.message,
+                                type: SnackbarType.error,
+                              );
                             }
                           },
                           builder: (context, state) {
@@ -242,13 +248,16 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                                       if (_currentOtp.length == 6) {
                                         context.read<VerifyOtpBloc>().add(
                                           VerifyOtpButtonclickEvent(
-                                    executiveId: widget.executiveId,
-                                    executiveOtp:_currentOtp
+                                            loginId: widget.loginId,
+                                            loginType: widget.loginType,
+                                            executiveOtp: _currentOtp,
                                           ),
                                         );
                                       } else {
                                         SnackBar(
-                                          content: Text('Please enter valid OTP'),
+                                          content: Text(
+                                            'Please enter valid OTP',
+                                          ),
                                         );
                                       }
                                     }
@@ -282,7 +291,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                               color: Colors.grey.shade700,
                             ),
                           ),
-           
+
                           BlocConsumer<ResendOtpBloc, ResendOtpState>(
                             listener: (context, state) {
                               if (state is ResendOtpSuccessState) {
@@ -297,7 +306,9 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                             },
                             builder: (context, state) {
                               return TextButton(
-                                onPressed: _resendTimer == 0 ? () => _resendOtp() : null,
+                                onPressed: _resendTimer == 0
+                                    ? () => _resendOtp()
+                                    : null,
                                 child: TextStyles.body(
                                   text: _resendTimer > 0
                                       ? 'Resend in $_resendTimer seconds'

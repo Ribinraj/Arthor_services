@@ -4,6 +4,7 @@ import 'package:arthor/core/urls.dart';
 import 'package:arthor/data/atributes_model.dart';
 import 'package:arthor/data/cases_model.dart';
 import 'package:arthor/data/dashboard_model.dart';
+import 'package:arthor/data/teamcases_model.dart';
 import 'package:arthor/data/treceable_verificationmodel.dart';
 import 'package:arthor/data/untreceable_verificationmodel.dart';
 import 'package:arthor/data/untreceablereason_model.dart';
@@ -172,6 +173,47 @@ class Apprepo {
     } on DioException catch (e) {
       debugPrint(e.message);
 
+      log(e.toString());
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+    ///////-------------fetchTeamCases-----------/////////////
+  Future<ApiResponse<List<TeamCaseModel>>> fetchTeamCases() async {
+    try {
+      final token = await getUserToken();
+      Response response = await dio.post(
+        Endpoints.teamcases,
+        options: Options(headers: {'Authorization': token}),
+      );
+      final responseData = response.data;
+      log('teamcases response: $responseData');
+
+      if (responseData["status"] == 200) {
+        final List<dynamic> teamCases = responseData['data'];
+        List<TeamCaseModel> fetchedTeamCases = teamCases
+            .map((cases) => TeamCaseModel.fromJson(cases))
+            .toList();
+        return ApiResponse(
+          data: fetchedTeamCases,
+          message: responseData['message'] ?? 'Success',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData["status"],
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint(e.message);
       log(e.toString());
       return ApiResponse(
         data: null,

@@ -8,6 +8,7 @@ class Endpoints {
   static const acceptcase = 'cases/accept';
   static const declinecase = 'cases/reject';
   static const asignedcases = 'cases/assigned';
+  static const teamcases = 'cases/teamcases';
   static const setToken = 'login/settoken';
   static const untreceablereason = 'masters/untracebale';
   static const atributes = 'masters/caseattributes';

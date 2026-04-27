@@ -12,6 +12,7 @@ import 'package:arthor/presentation/blocs/fetch_assignedcases_bloc/fetch_assigne
 import 'package:arthor/presentation/blocs/fetch_atributes_bloc/fetch_atributes_bloc.dart';
 import 'package:arthor/presentation/blocs/fetch_dashboard_bloc/fetch_dashboard_bloc.dart';
 import 'package:arthor/presentation/blocs/fetch_newcases_bloc/fetch_newcases_bloc.dart';
+import 'package:arthor/presentation/blocs/fetch_teamcases_bloc/fetch_teamcases_bloc.dart';
 
 import 'package:arthor/presentation/blocs/resend_otp_bloc/resend_otp_bloc.dart';
 import 'package:arthor/presentation/blocs/send_otp_bloc.dart/send_otp_bloc.dart';
@@ -78,6 +79,7 @@ class MyApp extends StatelessWidget {
             BlocProvider(create: (context) => FetchNewcasesBloc(repository: apprepo)),
              BlocProvider(create: (context) => CaseAcceptDeclineBloc(repository: apprepo)),
               BlocProvider(create: (context) => FetchAssignedcasesBloc(repository: apprepo)),
+              BlocProvider(create: (context) => FetchTeamcasesBloc(repository: apprepo)),
               BlocProvider(create: (context) => UntreceableReasonsBloc(repository: apprepo)),
               BlocProvider(create: (context) => FetchAtributesBloc(repository: apprepo)),
                 BlocProvider(create: (context) => FormSubmitBloc(repository: apprepo)),

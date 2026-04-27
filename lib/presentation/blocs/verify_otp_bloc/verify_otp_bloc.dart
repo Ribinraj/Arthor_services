@@ -17,28 +17,27 @@ class VerifyOtpBloc extends Bloc<VerifyOtpEvent, VerifyOtpState> {
     on<VerifyOtpButtonclickEvent>(verifyOtp);
   }
   FutureOr<void> verifyOtp(
-      VerifyOtpButtonclickEvent event, Emitter<VerifyOtpState> emit) async {
+    VerifyOtpButtonclickEvent event,
+    Emitter<VerifyOtpState> emit,
+  ) async {
     emit(VerifyOtpLoadingState());
     try {
-     
-
-      final response = await repository.verifyotp(executiveId:event.executiveId,executiveOtp: event.executiveOtp);
-   
+      final response = await repository.verifyotp(
+        loginId: event.loginId,
+        loginType: event.loginType,
+        executiveOtp: event.executiveOtp,
+      );
 
       log(response.message);
       if (!response.error && response.status == 200) {
         emit(VerifyOtpSuccessState());
       } else {
-
         log(response.message);
         emit(VerifyOtpErrorState(message: response.message));
       }
     } catch (e) {
-
-
       log(e.toString());
       emit(VerifyOtpErrorState(message: e.toString()));
     }
   }
 }
-
